@@ -16,7 +16,7 @@
             "32": "images/32.png",
             "64": "images/64.png"
         },
-        "default_title": "Google Mail",
+        "default_title": "Environment Switcher",
         "default_popup": "popup/popup.html"
     }
 }

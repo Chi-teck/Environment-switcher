@@ -10,34 +10,40 @@ export default {
     },
     data() {
         return {
-            errors: structuredClone(defaultErrors),
-            environment: structuredClone(this.$props.environment)
+            errors: {...defaultErrors},
+            environment: {...this.$props.environment}
         }
     },
     methods: {
         reset() {
-            this.$data.errors =  structuredClone(defaultErrors);
-            this.$data.environment = structuredClone(this.$props.environment);
+            this.$data.errors =  {...defaultErrors};
+            this.$data.environment = {...this.$props.environment};
         },
         _onSubmit: function (event) {
+            this.errors = {...defaultErrors};
+            const {name: $name, base_url: $baseUrl} = event.target.elements;
 
-            this.errors = structuredClone(defaultErrors);
-            console.log(this.errors)
+            if (!$name.validity.valid) {
 
-            const elements = event.target.elements;
-
-            if (!elements['name'].validity.valid) {
-                this.errors.name = elements['name'].validationMessage;
+                this.errors.name = $name.validationMessage;
             }
-
-            if (!elements['base_url'].validity.valid) {
-                this.errors.baseUrl = elements['base_url'].validationMessage;
+            if (!$baseUrl.validity.valid) {
+                this.errors.baseUrl = $baseUrl.validationMessage;
             }
-            else if (new URL(this.environment.baseUrl).pathname !== '/') {
-                this.errors.baseUrl = 'The URL should not include path.';
-            }
-            else if (this.environment.baseUrl.endsWith('/')) {
-                this.errors.baseUrl = 'The URL should not have ending slash.';
+            else {
+                const baseUrl = new URL(this.environment.baseUrl);
+                if (baseUrl.hash !== '') {
+                    this.errors.baseUrl = 'The URL should not include anchor.';
+                }
+                else if (baseUrl.search !== '') {
+                    this.errors.baseUrl = 'The URL should not include query string.';
+                }
+                else if (baseUrl.pathname !== '/') {
+                    this.errors.baseUrl = 'The URL should not include path.';
+                }
+                else if (this.environment.baseUrl.endsWith('/')) {
+                    this.errors.baseUrl = 'The URL should not have ending slash.';
+                }
             }
 
             if (this.errors.name || this.errors.baseUrl) {
@@ -45,7 +51,8 @@ export default {
                 return;
             }
 
-            this.$emit('save', structuredClone(toRaw(this.environment)));
+            this.environment.baseUrl = new URL(this.environment.baseUrl).origin;
+            this.$emit('save', {...this.environment});
             this.reset();
         },
         _onCancel: function () {
@@ -63,12 +70,12 @@ export default {
         </div>
         <div class="form-item text-item" :class="{'has-errors': errors.name}">
             <label>Name</label>
-            <input type="text" name="name" required v-model="environment.name"/>
+            <input type="text" name="name" required v-model="environment.name" placeholder="Localhost"/>
             <div class="error">{{ errors.name }}</div>
         </div>
         <div class="form-item text-item" :class="{'has-errors': errors.baseUrl}">
             <label>Base URL</label>
-            <input type="url" name="base_url" required v-model="environment.baseUrl"/>
+            <input type="url" name="base_url" required v-model="environment.baseUrl" placeholder="https://example.com"/>
             <div class="error">{{ errors.baseUrl }}</div>
         </div>
         <div class="form-item actions">
