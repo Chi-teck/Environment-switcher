@@ -3,7 +3,7 @@ import store from '../store';
 import uuid from '../uuid';
 import Dialog from './Dialog.vue';
 import EnvironmentForm from './EnvironmentForm.vue';
-import { changedProjects } from '../store.js'
+import { changedProjects } from '@/store'
 import NotFound from './NotFound.vue';
 import {toRaw} from "vue";
 
@@ -18,11 +18,9 @@ export default {
         return {
             project: null,
             changedProjects,
-            o1: false,
         }
     },
     created() {
-        // setInterval(() => this.o1 = !this.o1, 2300)
         this.$watch(
             () => this.$route.params,
             () => {
@@ -80,42 +78,28 @@ export default {
             this.project.environments[index] = environment;
         },
         deleteEnvironment(id) {
-            console.log(this.project.environments);
             const environments = this.project.environments.filter(environment => environment.id !== id);
-            console.log(environments);
             this.project.environments = toRaw(environments);
         },
-        save() {
-            store
-                .update(this.project)
-                .then(project => {
-                    this.project = project;
-                    changedProjects.remove(project.id);
-                });
+        async save() {
+            const project = await store.update(this.project);
+            this.project = project;
+            changedProjects.remove(project.id);
         },
-        revert() {
-
+        async revert() {
             delete cachedProjects[this.id];
-            store
-                .get(this.id)
-                .then(project => {
-                    if (project) {
-                        cachedProjects[this.id] = project;
-                        this.project = cachedProjects[this.id]
-                    }
-                    changedProjects.remove(project.id);
-                });
+            const project = await store.get(this.id);
+            if (project) {
+                cachedProjects[this.id] = project;
+                this.project = cachedProjects[this.id]
+            }
+            changedProjects.remove(project.id);
         },
-        deleteProject() {
-            store
-                .delete(this.project)
-                .then(() => {
-                    changedProjects.remove(this.project.id);
-                    delete cachedProjects[this.id];
-                    this.$router.push({ name: 'home'});
-                }
-            )
-
+        async deleteProject() {
+            await store.delete(this.project)
+            changedProjects.remove(this.project.id);
+            delete cachedProjects[this.id];
+            this.$router.push({ name: 'home'});
         }
     }
 }
@@ -156,7 +140,7 @@ export default {
                 </table>
                 <div class="actions">
                     <button class="primary">Save</button>
-                    <button class="secondary" v-on:click="revert" type="button">Revert</button>
+                    <button class="secondary" v-on:click="revert" type="button" :disabled="!changedProjects.has(id)">Revert</button>
                     <button class="danger" v-on:click="showModal('dialog-project-delete')" type="button">Delete</button>
                     <button class="create-environment" v-on:click="showModal('dialog-ef-create')">+ Create environment</button>
                 </div>
@@ -246,7 +230,6 @@ export default {
       margin-bottom: var(--sm3);
     }
 
-
     .actions {
         display: flex;
         gap: var(--sm3);
@@ -260,5 +243,4 @@ export default {
       margin-top: 0;
       margin-bottom: var(--sp2);
     }
-
 </style>

@@ -13,7 +13,7 @@
   --sp5: calc(var(--sp4) * var(--ratio));
 
   --c-snow: #f5fafc;
-  --c-venice: #036281;
+  --c-venice: #0d7394;
   --c-bondy: #008cba;
   --c-geyser: #c6e1ef;
   --c-orange: orange;
@@ -104,15 +104,23 @@ td {
 
 button {
   padding: 0.5em 1em;
-  cursor: pointer;
+
   transition: 0.15s;
   border: solid 1px var(--c-whale);
   background-color: var(--c-white);
   color: var(--c-whale);
 }
 
+button:not(:disabled) {
+  cursor: pointer;
+}
+
 button:active {
-  transform: scale(0.96);
+  transform: scale(0.98);
+}
+
+button:disabled {
+  opacity: 0.5;
 }
 
 button.small {
@@ -126,7 +134,7 @@ button.primary {
   border-color: var(--c-bondy);
 }
 
-button.primary:active {
+button.primary:hover {
   background-color: var(--c-venice);
 }
 

@@ -9,7 +9,6 @@ import Tools from "./components/Tools.vue";
 export default {
     components: {Tools, Sidebar},
 }
-
 </script>
 
 <template>
