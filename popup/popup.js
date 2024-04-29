@@ -42,14 +42,17 @@ async function init(data) {
     list.setAttribute('id', 'environments');
 
     if (project) {
-        project.environments.forEach(environment => {
-            const item = createItem(
-                environment.name,
-                environment.baseUrl +  currentUrl.pathname,
-                currentUrl.origin === environment.baseUrl,
-            );
-            list.appendChild(item);
-        })
+        const addEnvironmentItem = function (environment) {
+            if (environment.status) {
+                const item = createItem(
+                    environment.name ,
+                    environment.baseUrl +  currentUrl.pathname,
+                    currentUrl.origin === environment.baseUrl,
+                );
+                list.appendChild(item);
+            }
+        }
+        project.environments.forEach(addEnvironmentItem);
     }
 
     let path = 'options/index.html';

@@ -84,14 +84,11 @@ li a {
     display: flex;
     align-items: center;
 }
-.link-text {
-}
 
 .sidebar__project.active {
     box-shadow: inset 5px 0 var(--c-orange);
     border-left-color: var(--c-orange);
 }
-
 
 sup {
     color: var(--c-orange);
@@ -102,5 +99,4 @@ sup {
     transform: translatex(2px);
     transition: 0.15s;
 }
-
 </style>

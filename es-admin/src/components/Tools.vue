@@ -40,7 +40,7 @@ export default {
             <button class="action import" title="Import configuration" v-on:click="importConfig"></button>
         </li>
         <li>
-            <button class="action export" title="Export configuration configuration" v-on:click="exportConfig"></button>
+            <button class="action export" title="Export configuration" v-on:click="exportConfig"></button>
         </li>
         <li>
             <a class="action source" href="https://github.com/Chi-teck/environment-switcher" title="Source code"></a>
