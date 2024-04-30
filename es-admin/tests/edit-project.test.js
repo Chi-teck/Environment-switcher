@@ -3,7 +3,7 @@
 import * as matchers from './matchers.js';
 expect.extend(matchers);
 
-test('Layout', async () => {
+test('Edit project', async () => {
   await page.goto(`chrome-extension://${EXTENSION_ID}/options/index.html`);
   await (await page.$('.sidebar button.primary')).click();
 
@@ -19,11 +19,11 @@ test('Layout', async () => {
     await expect($revertButton).toBeDisabled();
     await expect($header).toHaveTextContent('New project');
 
-    await page.focus('#name')
+    await page.focus('#name');
     for (let i = 'New project'.length; i > 0; i--) {
-      await page.keyboard.press('Backspace')
+      await page.keyboard.press('Backspace');
     }
-    await page.keyboard.type('abc')
+    await page.keyboard.type('abc');
 
     await expect($sidebarLink).toHaveTextContent('New project*');
     await expect($header).toHaveTextContent('abc*');

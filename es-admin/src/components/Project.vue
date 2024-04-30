@@ -129,7 +129,7 @@ export default {
                             <td>{{ status ? 'Enabled' : 'Disabled' }}</td>
                             <td><a :href="baseUrl">{{ baseUrl }}</a></td>
                             <td class="operations">
-                                <button type="button" class="small" @click="showModal(`dialog-ef-edit-${id}`)">&nbsp;Edit&nbsp;</button>
+                                <button type="button" class="small" @click="showModal(`dialog-ef-edit-${id}`)">Edit</button>
                                 <button type="button" class="small danger" v-on:click="showModal(`dialog-ef-delete-${id}`)">Delete</button>
                             </td>
                         </tr>

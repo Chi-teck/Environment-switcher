@@ -12,19 +12,24 @@ export async function toHaveTextContent(element, expectedTextContent) {
     return assert('textContent', expectedTextContent, actualTextContent)
 }
 
-export async function toHaveTitle(element, expectedTextContent) {
-    const actualTextContent = await element.evaluate(el => el.title);
-    return assert('title', expectedTextContent, actualTextContent)
+export async function toHaveTitle(element, expectedTitle) {
+    const actualTitle = await element.evaluate(el => el.title);
+    return assert('title', expectedTitle, actualTitle)
 }
 
-export async function toHaveHref(element, expectedTextContent) {
-    const actualTextContent = await element.evaluate(el => el.href);
-    return assert('href', expectedTextContent, actualTextContent)
+export async function toHaveHref(element, expectedHref) {
+    const actualHref = await element.evaluate(el => el.href);
+    return assert('href', expectedHref, actualHref)
 }
 
-export async function toHaveValue(element, expectedTextContent) {
-    const actualTextContent = await element.evaluate(el => el.value);
-    return assert('value', expectedTextContent, actualTextContent)
+export async function toHaveValue(element, expectedValue) {
+    const actualValue = await element.evaluate(el => el.value);
+    return assert('value', expectedValue, actualValue)
+}
+
+export async function toHaveAriaLabel(element, expectedAriaLabel) {
+    const actualAriaLabel = await element.evaluate(el => el.ariaLabel);
+    return assert('value', expectedAriaLabel, actualAriaLabel)
 }
 
 export async function toBeDisabled(element) {
@@ -32,4 +37,11 @@ export async function toBeDisabled(element) {
     return pass
         ? { message: () => 'Element is disabled', pass }
         : { message: () => 'Element is not disabled', pass };
+}
+
+export async function toBeChecked(element) {
+    const pass = await element.evaluate(el => el.checked);
+    return pass
+        ? { message: () => 'Element is checked', pass }
+        : { message: () => 'Element is not checked', pass };
 }

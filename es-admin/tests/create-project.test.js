@@ -3,7 +3,7 @@
 import * as matchers from './matchers.js';
 expect.extend(matchers);
 
-test('Layout', async () => {
+test('Create project', async () => {
   await page.goto(`chrome-extension://${EXTENSION_ID}/options/index.html`);
 
   const $createProjectButton = await page.$('.sidebar button.primary');
