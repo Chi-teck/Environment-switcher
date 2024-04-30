@@ -13,7 +13,7 @@ export default {
 
 <template>
     <div class="app">
-        <Sidebar/>
+        <Sidebar class="app__sidebar"/>
         <main class="main">
             <router-view/>
         </main>
@@ -26,15 +26,19 @@ export default {
         display: flex;
         height: 100vh;
         position: relative;
+        min-width: 60rem;
     }
     .main {
         padding: var(--s0);
         flex-basis: 1fr;
-        flex-grow: 1;
         max-width: 60rem;
     }
     .main h1 {
         margin: 0;
+    }
+    .app__sidebar {
+        flex-basis: calc(18 * var(--s0));
+        min-width: calc(14 * var(--s0));
     }
     .tools {
         position: absolute;

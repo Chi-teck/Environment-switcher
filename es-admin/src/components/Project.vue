@@ -107,11 +107,11 @@ export default {
 <template>
     <div>
         <div v-if="project" class="project">
-            <h1>{{ project.name }} <sup v-if="changedProjects.has(id)" aria-label="Changed">*</sup></h1>
+            <h1>{{ project.name }}<sup v-if="changedProjects.has(id) && project.name.length > 0" aria-label="Changed">*</sup></h1>
             <form v-on:submit.prevent="save">
                 <div class="form-element">
-                    <label>Project name</label>
-                    <input v-model="project.name" type="text" name="name" required/>
+                    <label for="name">Project name</label>
+                    <input id="name" v-model="project.name" type="text" name="name" required/>
                 </div>
                 <table>
                     <caption>Environments</caption>

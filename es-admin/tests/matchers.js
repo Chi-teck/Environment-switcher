@@ -1,16 +1,3 @@
-
-// export async function toHaveProperty(element, property, expectedResult) {
-//     const callbacks = {
-//         textContent: el => el.textContent,
-//         title: el => el.title,
-//         href: el => el.href,
-//     }
-//     const actualResult = await element.evaluate(callbacks[property]);
-//     return actualResult ===  expectedResult
-//         ? { message: () => `${property} "${actualResult}" is equal to "${expectedResult}".`, pass: true }
-//         : { message: () => `${property} "${actualResult}" is not equal to "${expectedResult}".`, pass: false };
-// }
-
 function assert(property, expectedResult, actualResult) {
     return expectedResult ===  actualResult
         ? { message: () => `Element ${property} "${actualResult}" is equal to "${expectedResult}".`, pass: true }
@@ -18,6 +5,9 @@ function assert(property, expectedResult, actualResult) {
 }
 
 export async function toHaveTextContent(element, expectedTextContent) {
+    if (element === null) {
+        return {message: () => 'Element must not be null', pass: false};
+    }
     const actualTextContent = await element.evaluate(el => el.textContent);
     return assert('textContent', expectedTextContent, actualTextContent)
 }
@@ -29,5 +19,17 @@ export async function toHaveTitle(element, expectedTextContent) {
 
 export async function toHaveHref(element, expectedTextContent) {
     const actualTextContent = await element.evaluate(el => el.href);
-    return assert('title', expectedTextContent, actualTextContent)
+    return assert('href', expectedTextContent, actualTextContent)
+}
+
+export async function toHaveValue(element, expectedTextContent) {
+    const actualTextContent = await element.evaluate(el => el.value);
+    return assert('value', expectedTextContent, actualTextContent)
+}
+
+export async function toBeDisabled(element) {
+    const pass = await element.evaluate(el => el.disabled);
+    return pass
+        ? { message: () => 'Element is disabled', pass }
+        : { message: () => 'Element is not disabled', pass };
 }
