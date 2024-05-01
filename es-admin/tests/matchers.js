@@ -45,3 +45,10 @@ export async function toBeChecked(element) {
         ? { message: () => 'Element is checked', pass }
         : { message: () => 'Element is not checked', pass };
 }
+
+export async function toBeOpen(element) {
+    const pass = await element.evaluate(el => el.open);
+    return pass
+        ? { message: () => 'Dialog is open', pass }
+        : { message: () => 'Dialog is closed', pass };
+}
