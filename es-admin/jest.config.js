@@ -1,9 +1,9 @@
 export default {
   verbose: true,
   preset: 'jest-puppeteer',
-  maxWorkers: 1,
+  maxWorkers: 8,
   testMatch: ['**/tests/*.test.js'],
-  testTimeout: 50_000,
+  testTimeout: 5_000,
   globals: {
     EXTENSION_ID: 'phbkcfcooeicpodbdbngodeejmkaeamm',
   },

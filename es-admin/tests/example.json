@@ -1,0 +1,26 @@
+[
+    {
+        "environments": [
+            {
+                "baseUrl": "https://local.example.com",
+                "id": "1dd90d39-f292-418e-8cb8-a3e226d61768",
+                "name": "Localhost",
+                "status": true
+            },
+            {
+                "baseUrl": "https://example.com",
+                "id": "260e2913-b735-4914-8c7d-9c06ccdb33d2",
+                "name": "Prod",
+                "status": true
+            },
+            {
+                "baseUrl": "https://dev.example.com",
+                "id": "364d1852-5fed-46f0-9e03-04af28af604d",
+                "name": "Dev",
+                "status": false
+            }
+        ],
+        "id": "76e86e6a-2a54-4562-b178-9923a9878509",
+        "name": "Example"
+    }
+]

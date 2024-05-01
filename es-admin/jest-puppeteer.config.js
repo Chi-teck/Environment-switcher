@@ -8,7 +8,8 @@ export default {
     devtools: false,
     args: [
       `--disable-extensions-except=${EXTENSION_PATH}`,
-      `--load-extension=${EXTENSION_PATH}`
+      `--load-extension=${EXTENSION_PATH}`,
+      '--start-maximized'
     ]
   },
 };
