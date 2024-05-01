@@ -1,8 +1,6 @@
 {
     "env": {
-        "browser": true,
-        "es2021": true,
-        "node": true
+        "browser": true
     },
     "extends": [
         "airbnb-base",
@@ -24,10 +22,10 @@
         }
     ],
     "rules": {
-      "no-plusplus": [
-          "error",
-          {"allowForLoopAfterthoughts": true}
-      ]
+        "vue/max-attributes-per-line": ["off"],
+        "vue/singleline-html-element-content-newline": ["off"],
+        "max-len": ["off"],
+        "vue/html-closing-bracket-spacing": ["off"]
     },
     "root": true,
     "globals": {

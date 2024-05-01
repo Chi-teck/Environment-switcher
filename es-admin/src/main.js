@@ -3,8 +3,8 @@ import './assets/main.css';
 import { createRouter, createWebHashHistory } from 'vue-router';
 
 import { createApp } from 'vue';
-import Home from './components/Home.vue';
-import Project from './components/Project.vue';
+import Home from './components/HomeItem.vue';
+import Project from './components/ProjectItem.vue';
 import NotFound from './components/NotFound.vue';
 
 import App from './App.vue';

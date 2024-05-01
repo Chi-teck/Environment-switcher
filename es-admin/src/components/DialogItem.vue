@@ -1,65 +1,32 @@
 <script>
 export default {
-    props: {
-        id: String,
-        header: String,
-    },
-    mounted() {
-        const close = () => this.$el.close();
-        this.$el
-            .querySelectorAll('[data-close-modal]')
-            .forEach(element => element.addEventListener('click', close));
-    },
-}
+  props: {
+    id: String,
+    header: String,
+  },
+  mounted() {
+    const close = () => this.$el.close();
+    this.$el
+      .querySelectorAll('[data-close-modal]')
+      .forEach((element) => element.addEventListener('click', close));
+  },
+};
 </script>
 <template>
-  <dialog
-    :id="id"
-    :key="id"
-  >
+  <dialog :id="id" :key="id">
     <div class="header">
       <h2>{{ header }}</h2>
-      <button
-        type="button"
-        data-close-modal
-        class="close"
-        aria-label="Close"
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="100%"
-          height="100%"
-          viewBox="0 0 32 32"
-          aria-hidden="true"
-        >
-          <line
-            x1="2"
-            y1="2"
-            x2="30"
-            y2="30"
-            stroke="currentColor"
-            stroke-width="3"
-            stroke-linecap="round"
-          />
-          <line
-            x1="30"
-            y1="2"
-            x2="2"
-            y2="30"
-            stroke="currentColor"
-            stroke-width="3"
-            stroke-linecap="round"
-          />
+      <button type="button" data-close-modal class="close" aria-label="Close">
+        <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 32 32" aria-hidden="true">
+          <line x1="2" y1="2" x2="30" y2="30" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+          <line x1="30" y1="2" x2="2" y2="30" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
         </svg>
       </button>
     </div>
-    <div class="body">
-      <slot />
-    </div>
+    <div class="body"><slot/></div>
   </dialog>
 </template>
 <style scoped>
-
     dialog {
       padding: var(--sp2);
       box-shadow: 0 0 6px #999;
@@ -111,5 +78,4 @@ export default {
     .close:hover {
         color: var(--c-black);
     }
-
 </style>

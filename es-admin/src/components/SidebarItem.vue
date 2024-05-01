@@ -1,41 +1,35 @@
 <script>
 
-import store, {changedProjects} from "../store";
+import store, { changedProjects } from '../store';
 
 export default {
-    data() {
-        return {
-            projects: [],
-            changedProjects,
-        }
+  data() {
+    return {
+      projects: [],
+      changedProjects,
+    };
+  },
+  mounted() {
+    store.onSave = this.onSave;
+    this.onSave();
+  },
+  methods: {
+    async onSave() {
+      this.projects = await store.getAll();
     },
-    mounted() {
-        store.onSave = this.onSave;
-        this.onSave();
+    async createProject() {
+      const project = await store.create();
+      this.$router.push(
+        { name: 'project', params: { id: project.id } },
+      );
     },
-    methods: {
-        async onSave() {
-            this.projects = await store.getAll()
-        },
-        async createProject() {
-            const project = await store.create();
-            this.$router.push(
-                {name: 'project', params: {id: project.id}},
-            );
-        }
-    }
-}
+  },
+};
 
 </script>
 <template>
   <div class="sidebar">
-    <button
-      type="button"
-      class="primary"
-      @click="createProject"
-    >
-      Create Project
-    </button>
+    <button type="button" class="primary" @click="createProject">Create Project</button>
     <hr>
     <ul v-if="projects.length > 0">
       <li

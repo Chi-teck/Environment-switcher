@@ -1,14 +1,10 @@
 <script>
-import store from "./store";
-
-import { changedProjects } from './store.js'
-
-import Sidebar from './components/Sidebar.vue';
-import Tools from "./components/Tools.vue";
+import Sidebar from './components/SidebarItem.vue';
+import Tools from './components/ToolsItem.vue';
 
 export default {
-    components: {Tools,Sidebar},
-}
+  components: { Tools, Sidebar },
+};
 </script>
 
 <template>
