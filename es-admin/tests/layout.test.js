@@ -13,13 +13,13 @@ test('Layout', async () => {
   const $createProjectButton = await page.$('.sidebar button.primary');
   expect($createProjectButton).toHaveTextContent('Create Project');
 
-  const $header = await page.$('.main h1');
+  const $header = await page.$('.app__main h1');
   expect($header).toHaveTextContent('Environment Switcher');
 
-  const $help = await page.$('.main p');
+  const $help = await page.$('.app__main p');
   expect($help).toHaveTextContent('Select a project from the left sidebar or create a new one.');
 
-  const $tools = await page.$('.tools');
+  const $tools = await page.$('.app__tools');
 
   const $importAction = await $tools.$('li button.action.import');
   expect($importAction).toHaveTitle('Import configuration');

@@ -16,7 +16,7 @@ test('Create project', async () => {
   expect(page.url()).toBe(href);
   expect(page.url()).toContain(`chrome-extension://${EXTENSION_ID}/options/index.html#/project`);
 
-  const $header = await page.$('.main h1');
+  const $header = await page.$('.app__main h1');
   await expect($header).toHaveTextContent('New project');
 
   const $form = await page.$('form');

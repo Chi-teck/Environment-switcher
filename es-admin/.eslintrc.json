@@ -25,7 +25,8 @@
         "vue/max-attributes-per-line": ["off"],
         "vue/singleline-html-element-content-newline": ["off"],
         "max-len": ["off"],
-        "vue/html-closing-bracket-spacing": ["off"]
+        "vue/html-closing-bracket-spacing": ["off"],
+        "arrow-parens": ["off"]
     },
     "root": true,
     "globals": {
