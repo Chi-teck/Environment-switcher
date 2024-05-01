@@ -63,26 +63,62 @@ export default {
 }
 </script>
 <template>
-    <form v-on:submit="_onSubmit" novalidate>
-        <div class="form-item checkbox-item">
-            <label>Enabled</label>
-            <input type="checkbox" name="status" v-model="environment.status"/>
-        </div>
-        <div class="form-item text-item" :class="{'has-errors': errors.name}">
-            <label>Name</label>
-            <input type="text" name="name" required v-model="environment.name" placeholder="Localhost"/>
-            <div class="error">{{ errors.name }}</div>
-        </div>
-        <div class="form-item text-item" :class="{'has-errors': errors.baseUrl}">
-            <label>Base URL</label>
-            <input type="url" name="base_url" required v-model="environment.baseUrl" placeholder="https://example.com"/>
-            <div class="error">{{ errors.baseUrl }}</div>
-        </div>
-        <div class="form-item actions">
-            <button class="primary">Save</button>
-            <button type="button" v-on:click="_onCancel">Cancel</button>
-        </div>
-    </form>
+  <form
+    novalidate
+    @submit="_onSubmit"
+  >
+    <div class="form-item checkbox-item">
+      <label>Enabled</label>
+      <input
+        v-model="environment.status"
+        type="checkbox"
+        name="status"
+      >
+    </div>
+    <div
+      class="form-item text-item"
+      :class="{'has-errors': errors.name}"
+    >
+      <label>Name</label>
+      <input
+        v-model="environment.name"
+        type="text"
+        name="name"
+        required
+        placeholder="Localhost"
+      >
+      <div class="error">
+        {{ errors.name }}
+      </div>
+    </div>
+    <div
+      class="form-item text-item"
+      :class="{'has-errors': errors.baseUrl}"
+    >
+      <label>Base URL</label>
+      <input
+        v-model="environment.baseUrl"
+        type="url"
+        name="base_url"
+        required
+        placeholder="https://example.com"
+      >
+      <div class="error">
+        {{ errors.baseUrl }}
+      </div>
+    </div>
+    <div class="form-item actions">
+      <button class="primary">
+        Save
+      </button>
+      <button
+        type="button"
+        @click="_onCancel"
+      >
+        Cancel
+      </button>
+    </div>
+  </form>
 </template>
 <style scoped>
 

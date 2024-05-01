@@ -1,34 +1,34 @@
 // noinspection JSUnresolvedReference
 
-import * as matchers from './matchers.js';
+import * as matchers from './matchers';
+
 expect.extend(matchers);
 
 test('Edit project', async () => {
   await page.goto(`chrome-extension://${EXTENSION_ID}/options/index.html`);
   await (await page.$('.sidebar button.primary')).click();
 
-  const $sidebarLink = await page.waitForSelector('.sidebar li a.active', {visible: true});
+  const $sidebarLink = await page.waitForSelector('.sidebar li a.active', { visible: true });
 
   const $saveButton = await page.$('.actions button.primary');
   const $revertButton = await page.$('.actions button.secondary');
 
   const $header = await page.$('h1');
 
-  const editProject = async function () {
+  const editProject = async function editProject() {
     await expect($sidebarLink).toHaveTextContent('New project');
     await expect($revertButton).toBeDisabled();
     await expect($header).toHaveTextContent('New project');
 
-    await page.focus('#name');
-    for (let i = 'New project'.length; i > 0; i--) {
-      await page.keyboard.press('Backspace');
-    }
-    await page.keyboard.type('abc');
+    const $nameInput = await page.$('#name');
+    await $nameInput.focus();
+    await $nameInput.click({ clickCount: 3 });
+    await $nameInput.type('abc');
 
     await expect($sidebarLink).toHaveTextContent('New project*');
     await expect($header).toHaveTextContent('abc*');
     await expect($revertButton).not.toBeDisabled();
-  }
+  };
 
   await editProject();
   await $revertButton.click();
@@ -36,7 +36,7 @@ test('Edit project', async () => {
   await editProject();
   await $saveButton.click();
 
-  await page.waitForSelector('h1 sup', {hidden: true});
+  await page.waitForSelector('h1 sup', { hidden: true });
   await expect($sidebarLink).toHaveTextContent('abc');
   await expect($header).toHaveTextContent('abc');
   await expect($revertButton).toBeDisabled();

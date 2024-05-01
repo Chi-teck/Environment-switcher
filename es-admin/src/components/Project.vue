@@ -20,6 +20,16 @@ export default {
             changedProjects,
         }
     },
+    watch: {
+        project: {
+            handler(newProject, oldProject) {
+                if (newProject === oldProject) {
+                    this.changedProjects.add(this.project.id);
+                }
+            },
+            deep: true,
+        }
+    },
     created() {
         this.$watch(
             () => this.$route.params,
@@ -42,16 +52,6 @@ export default {
             },
             { immediate: true }
         )
-    },
-    watch: {
-        project: {
-            handler(newProject, oldProject) {
-                if (newProject === oldProject) {
-                    this.changedProjects.add(this.project.id);
-                }
-            },
-            deep: true,
-        }
     },
     methods: {
         getRef(id) {
@@ -105,100 +105,174 @@ export default {
 }
 </script>
 <template>
-    <div>
-        <div v-if="project" class="project">
-            <h1>{{ project.name }}<sup v-if="changedProjects.has(id) && project.name.length > 0" aria-label="Changed">*</sup></h1>
-            <form v-on:submit.prevent="save">
-                <div class="form-element">
-                    <label for="name">Project name</label>
-                    <input id="name" v-model="project.name" type="text" name="name" required/>
-                </div>
-                <table>
-                    <caption>Environments</caption>
-                    <thead>
-                        <tr>
-                            <th>Name</th>
-                            <th>Status</th>
-                            <th>Base URL</th>
-                            <th>Operations</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr v-for="{id, name, status, baseUrl} in project.environments" :key="id">
-                            <td>{{ name }}</td>
-                            <td>{{ status ? 'Enabled' : 'Disabled' }}</td>
-                            <td><a :href="baseUrl">{{ baseUrl }}</a></td>
-                            <td class="operations">
-                                <button type="button" class="small" @click="showModal(`dialog-ef-edit-${id}`)">Edit</button>
-                                <button type="button" class="small danger" v-on:click="showModal(`dialog-ef-delete-${id}`)">Delete</button>
-                            </td>
-                        </tr>
-                        <tr v-if="project.environments.length === 0">
-                            <td colspan="4">The are no environments yet.</td>
-                        </tr>
-                    </tbody>
-                </table>
-                <div class="actions">
-                    <button class="primary">Save</button>
-                    <button class="secondary" v-on:click="revert" type="button" :disabled="!changedProjects.has(id)">Revert</button>
-                    <button class="danger" v-on:click="showModal('dialog-project-delete')" type="button">Delete</button>
-                    <button class="create-environment" v-on:click="showModal('dialog-ef-create')">+ Create environment</button>
-                </div>
-            </form>
-            <Dialog
-                ref="dialog-ef-create"
-                header="Create Environment"
-                @close="resetEnvironmentForm('ef-create')"
-            >
-                <EnvironmentForm
-                    ref="ef-create"
-                    :environment="{name: '', status: true, baseUrl: ''}"
-                    method="dialog"
-                    @save="this.createEnvironment"
-                    @cancel="closeModal('dialog-ef-create')"
-                />
-            </Dialog>
-            <Dialog
-                v-for="environment in project.environments"
-                :key="environment.id"
-                :ref="`dialog-ef-edit-${environment.id}`"
-                header="Edit Environment"
-                @close="resetEnvironmentForm(`ef-edit-${environment.id}`)"
-            >
-              <EnvironmentForm
-                  :ref="`ef-edit-${environment.id}`"
-                  :environment="{...environment}"
-                  method="dialog"
-                  @save="this.updateEnvironment"
-                  @cancel="closeModal(`dialog-ef-edit-${environment.id}`)"
-              />
-            </Dialog>
-            <Dialog
-                v-for="environment in project.environments"
-                :key="environment.id"
-                :ref="`dialog-ef-delete-${environment.id}`"
-                header="Delete Environment?"
-            >
-                <form method="dialog" v-on:submit="deleteEnvironment(environment.id)">
-                    <p>This action cannot be undone.</p>
-                    <div class="actions">
-                        <button class="danger">Delete</button>
-                        <button data-close-modal type="button">Cancel</button>
-                    </div>
-                </form>
-            </Dialog>
-            <Dialog ref="dialog-project-delete" header="Delete project?">
-                <form method="dialog" v-on:submit="deleteProject">
-                    <p>This action cannot be undone.</p>
-                    <div class="actions">
-                        <button class="danger">Delete</button>
-                        <button data-close-modal type="button">Cancel</button>
-                    </div>
-                </form>
-            </Dialog>
+  <div>
+    <div
+      v-if="project"
+      class="project"
+    >
+      <h1>
+        {{ project.name }}<sup
+          v-if="changedProjects.has(id) && project.name.length > 0"
+          aria-label="Changed"
+        >*</sup>
+      </h1>
+      <form @submit.prevent="save">
+        <div class="form-element">
+          <label for="name">Project name</label>
+          <input
+            id="name"
+            v-model="project.name"
+            type="text"
+            name="name"
+            required
+          >
         </div>
-        <NotFound v-else/>
+        <table>
+          <caption>Environments</caption>
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Status</th>
+              <th>Base URL</th>
+              <th>Operations</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr
+              v-for="{id, name, status, baseUrl} in project.environments"
+              :key="id"
+            >
+              <td>{{ name }}</td>
+              <td>{{ status ? 'Enabled' : 'Disabled' }}</td>
+              <td><a :href="baseUrl">{{ baseUrl }}</a></td>
+              <td class="operations">
+                <button
+                  type="button"
+                  class="small"
+                  @click="showModal(`dialog-ef-edit-${id}`)"
+                >
+                  Edit
+                </button>
+                <button
+                  type="button"
+                  class="small danger"
+                  @click="showModal(`dialog-ef-delete-${id}`)"
+                >
+                  Delete
+                </button>
+              </td>
+            </tr>
+            <tr v-if="project.environments.length === 0">
+              <td colspan="4">
+                The are no environments yet.
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="actions">
+          <button class="primary">
+            Save
+          </button>
+          <button
+            class="secondary"
+            type="button"
+            :disabled="!changedProjects.has(id)"
+            @click="revert"
+          >
+            Revert
+          </button>
+          <button
+            class="danger"
+            type="button"
+            @click="showModal('dialog-project-delete')"
+          >
+            Delete
+          </button>
+          <button
+            class="create-environment"
+            @click="showModal('dialog-ef-create')"
+          >
+            + Create environment
+          </button>
+        </div>
+      </form>
+      <Dialog
+        ref="dialog-ef-create"
+        header="Create Environment"
+        @close="resetEnvironmentForm('ef-create')"
+      >
+        <EnvironmentForm
+          ref="ef-create"
+          :environment="{name: '', status: true, baseUrl: ''}"
+          method="dialog"
+          @save="createEnvironment"
+          @cancel="closeModal('dialog-ef-create')"
+        />
+      </Dialog>
+      <Dialog
+        v-for="environment in project.environments"
+        :key="environment.id"
+        :ref="`dialog-ef-edit-${environment.id}`"
+        header="Edit Environment"
+        @close="resetEnvironmentForm(`ef-edit-${environment.id}`)"
+      >
+        <EnvironmentForm
+          :ref="`ef-edit-${environment.id}`"
+          :environment="{...environment}"
+          method="dialog"
+          @save="updateEnvironment"
+          @cancel="closeModal(`dialog-ef-edit-${environment.id}`)"
+        />
+      </Dialog>
+      <Dialog
+        v-for="environment in project.environments"
+        :key="environment.id"
+        :ref="`dialog-ef-delete-${environment.id}`"
+        header="Delete Environment?"
+      >
+        <form
+          method="dialog"
+          @submit="deleteEnvironment(environment.id)"
+        >
+          <p>This action cannot be undone.</p>
+          <div class="actions">
+            <button class="danger">
+              Delete
+            </button>
+            <button
+              data-close-modal
+              type="button"
+            >
+              Cancel
+            </button>
+          </div>
+        </form>
+      </Dialog>
+      <Dialog
+        ref="dialog-project-delete"
+        header="Delete project?"
+      >
+        <form
+          method="dialog"
+          @submit="deleteProject"
+        >
+          <p>This action cannot be undone.</p>
+          <div class="actions">
+            <button class="danger">
+              Delete
+            </button>
+            <button
+              data-close-modal
+              type="button"
+            >
+              Cancel
+            </button>
+          </div>
+        </form>
+      </Dialog>
     </div>
+    <NotFound v-else />
+  </div>
 </template>
 <style scoped>
     h1 {

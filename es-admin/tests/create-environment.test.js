@@ -1,6 +1,7 @@
 // noinspection JSUnresolvedReference
 
-import * as matchers from './matchers.js';
+import * as matchers from './matchers';
+
 expect.extend(matchers);
 
 test('Create environment', async () => {
@@ -12,10 +13,10 @@ test('Create environment', async () => {
   await $createEnvironmentButton.click();
 
   // -- Assert environment form.
-  const $dialog = await page.waitForSelector('dialog[open]', {visible: true});
+  const $dialog = await page.waitForSelector('dialog[open]', { visible: true });
   await expect(await $dialog.$('h2')).toHaveTextContent('Create Environment');
   const $form = await $dialog.$('form');
-  const $statusCheckbox = await $form.$('xpath/div/label[text() = "Enabled"]//following-sibling::input[@type = "checkbox"]')
+  const $statusCheckbox = await $form.$('xpath/div/label[text() = "Enabled"]//following-sibling::input[@type = "checkbox"]');
   await expect($statusCheckbox).toBeChecked();
   const $nameInput = await $form.$('xpath/div/label[text() = "Name"]//following-sibling::input[@type = "text"]');
   await expect($nameInput).toBeTruthy();
@@ -29,11 +30,11 @@ test('Create environment', async () => {
   await $saveButton.click();
 
   const $table = await page.$('table');
-  const $tds_local = await $table.$$('tbody tr:first-child td');
-  await expect($tds_local[0]).toHaveTextContent('Localhost');
-  await expect($tds_local[1]).toHaveTextContent('Enabled');
-  await expect($tds_local[2]).toHaveTextContent('https://local.example.com');
-  await expect($tds_local[3]).toHaveTextContent('EditDelete');
+  const $tdsLocal = await $table.$$('tbody tr:first-child td');
+  await expect($tdsLocal[0]).toHaveTextContent('Localhost');
+  await expect($tdsLocal[1]).toHaveTextContent('Enabled');
+  await expect($tdsLocal[2]).toHaveTextContent('https://local.example.com');
+  await expect($tdsLocal[3]).toHaveTextContent('EditDelete');
 
   await $createEnvironmentButton.click();
   await $statusCheckbox.click();
@@ -41,16 +42,16 @@ test('Create environment', async () => {
   await $urlInput.type('https://dev.example.com');
   await $saveButton.click();
 
-  const $tds_dev = await $table.$$('tbody tr:last-child td');
-  await expect($tds_dev[0]).toHaveTextContent('Dev');
-  await expect($tds_dev[1]).toHaveTextContent('Disabled');
-  await expect($tds_dev[2]).toHaveTextContent('https://dev.example.com');
-  await expect($tds_dev[3]).toHaveTextContent('EditDelete');
+  const $tdsDev = await $table.$$('tbody tr:last-child td');
+  await expect($tdsDev[0]).toHaveTextContent('Dev');
+  await expect($tdsDev[1]).toHaveTextContent('Disabled');
+  await expect($tdsDev[2]).toHaveTextContent('https://dev.example.com');
+  await expect($tdsDev[3]).toHaveTextContent('EditDelete');
 
   await (await page.$('xpath///form//button[text() = "Save"]')).click();
 
   const data = await page.evaluate(() => chrome.storage.sync.get());
-  const environments = data.projects[0].environments;
+  const { environments } = data.projects[0];
   expect(environments.length).toBe(2);
   expect(environments[0].name).toBe('Localhost');
   expect(environments[0].baseUrl).toBe('https://local.example.com');

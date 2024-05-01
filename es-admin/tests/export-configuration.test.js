@@ -1,8 +1,7 @@
 // noinspection JSUnresolvedReference
 
-import * as matchers from './matchers.js';
-import { resolve } from 'path';
 import { readFileSync, rmSync } from 'fs';
+import * as matchers from './matchers';
 
 expect.extend(matchers);
 
@@ -30,12 +29,13 @@ test('Export configuration', async () => {
   const client = await page.createCDPSession();
   await client.send('Page.setDownloadBehavior', {
     behavior: 'allow',
-    downloadPath: '/tmp'
+    downloadPath: '/tmp',
   });
 
   await (await page.$('xpath///button[@title = "Export configuration"]')).click();
   // @todo Find better way to wait for download to complete.
-  await new Promise(r => setTimeout(r, 500));
+  // eslint-disable-next-line no-promise-executor-return
+  await new Promise((r) => setTimeout(r, 500));
 
   // -- Assert projects.
   const projects = JSON.parse(readFileSync('/tmp/es-projects.json', 'utf8'));
@@ -49,8 +49,7 @@ test('Export configuration', async () => {
   expect(projects[1].environments.length).toBe(0);
 });
 
-
 afterEach(async () => {
-  rmSync('/tmp/es-projects.json', {force: true});
+  rmSync('/tmp/es-projects.json', { force: true });
   await page.evaluate(() => chrome.storage.sync.clear());
 });

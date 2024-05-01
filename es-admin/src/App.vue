@@ -7,18 +7,18 @@ import Sidebar from './components/Sidebar.vue';
 import Tools from "./components/Tools.vue";
 
 export default {
-    components: {Tools, Sidebar},
+    components: {Tools,Sidebar},
 }
 </script>
 
 <template>
-    <div class="app">
-        <Sidebar class="app__sidebar"/>
-        <main class="main">
-            <router-view/>
-        </main>
-        <Tools class="tools"/>
-    </div>
+  <div class="app">
+    <Sidebar class="app__sidebar" />
+    <main class="main">
+      <router-view />
+    </main>
+    <Tools class="tools" />
+  </div>
 </template>
 
 <style scoped>

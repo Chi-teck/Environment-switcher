@@ -1,13 +1,11 @@
 // noinspection JSUnresolvedReference
 
-import * as matchers from './matchers.js';
 import { resolve } from 'path';
-import { readFileSync, rmSync } from 'fs';
+import * as matchers from './matchers';
 
 expect.extend(matchers);
 
 test('Import configuration', async () => {
-
   await page.goto(`chrome-extension://${EXTENSION_ID}/options/index.html`);
 
   const [fileChooser] = await Promise.all([
@@ -24,7 +22,6 @@ test('Import configuration', async () => {
   await expect($tds[1]).toHaveTextContent('Enabled');
   await expect($tds[2]).toHaveTextContent('https://local.example.com');
 });
-
 
 afterEach(async () => {
   await page.evaluate(() => chrome.storage.sync.clear());

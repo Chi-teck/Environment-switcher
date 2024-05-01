@@ -1,6 +1,7 @@
 // noinspection JSUnresolvedReference
 
-import * as matchers from './matchers.js';
+import * as matchers from './matchers';
+
 expect.extend(matchers);
 
 test('Create project', async () => {
@@ -8,10 +9,10 @@ test('Create project', async () => {
 
   const $createProjectButton = await page.$('.sidebar button.primary');
   await $createProjectButton.click();
-  const $sidebarLink = await page.waitForSelector('.sidebar li a.active', {visible: true});
+  const $sidebarLink = await page.waitForSelector('.sidebar li a.active', { visible: true });
   await expect($sidebarLink).toHaveTextContent('New project');
 
-  const href = await $sidebarLink.evaluate(el => el.href);
+  const href = await $sidebarLink.evaluate((el) => el.href);
   expect(page.url()).toBe(href);
   expect(page.url()).toContain(`chrome-extension://${EXTENSION_ID}/options/index.html#/project`);
 

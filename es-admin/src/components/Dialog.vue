@@ -13,18 +13,50 @@ export default {
 }
 </script>
 <template>
-    <dialog v-bind:id="id" v-bind:key="id">
-        <div class="header">
-            <h2>{{ header }}</h2>
-            <button type="button" data-close-modal class="close" aria-label="Close">
-                <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 32 32" aria-hidden="true">
-                    <line x1="2" y1="2" x2="30" y2="30" stroke="currentColor" stroke-width="3"  stroke-linecap="round"/>
-                    <line x1="30" y1="2" x2="2" y2="30" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
-                </svg>
-            </button>
-        </div>
-        <div class="body"><slot/></div>
-    </dialog>
+  <dialog
+    :id="id"
+    :key="id"
+  >
+    <div class="header">
+      <h2>{{ header }}</h2>
+      <button
+        type="button"
+        data-close-modal
+        class="close"
+        aria-label="Close"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="100%"
+          height="100%"
+          viewBox="0 0 32 32"
+          aria-hidden="true"
+        >
+          <line
+            x1="2"
+            y1="2"
+            x2="30"
+            y2="30"
+            stroke="currentColor"
+            stroke-width="3"
+            stroke-linecap="round"
+          />
+          <line
+            x1="30"
+            y1="2"
+            x2="2"
+            y2="30"
+            stroke="currentColor"
+            stroke-width="3"
+            stroke-linecap="round"
+          />
+        </svg>
+      </button>
+    </div>
+    <div class="body">
+      <slot />
+    </div>
+  </dialog>
 </template>
 <style scoped>
 

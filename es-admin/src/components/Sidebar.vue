@@ -28,17 +28,34 @@ export default {
 
 </script>
 <template>
-    <div class="sidebar">
-        <button type="button" class="primary" v-on:click="createProject">Create Project</button>
-        <hr/>
-        <ul v-if="projects.length > 0">
-            <li v-for="{id, name} in projects" :key="id">
-                <router-link :to="{name: 'project', params: {id}}" class="sidebar__project">
-                    <div class="link-text">{{ name }}<sup v-if="this.changedProjects.has(id)" aria-label="Changed">*</sup></div>
-                </router-link>
-            </li>
-        </ul>
-    </div>
+  <div class="sidebar">
+    <button
+      type="button"
+      class="primary"
+      @click="createProject"
+    >
+      Create Project
+    </button>
+    <hr>
+    <ul v-if="projects.length > 0">
+      <li
+        v-for="{id, name} in projects"
+        :key="id"
+      >
+        <router-link
+          :to="{name: 'project', params: {id}}"
+          class="sidebar__project"
+        >
+          <div class="link-text">
+            {{ name }}<sup
+              v-if="changedProjects.has(id)"
+              aria-label="Changed"
+            >*</sup>
+          </div>
+        </router-link>
+      </li>
+    </ul>
+  </div>
 </template>
 <style scoped>
 

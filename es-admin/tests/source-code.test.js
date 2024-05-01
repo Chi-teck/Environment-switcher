@@ -1,6 +1,6 @@
 // noinspection JSUnresolvedReference
 
-import * as matchers from './matchers.js';
+import * as matchers from './matchers';
 
 expect.extend(matchers);
 
@@ -12,7 +12,6 @@ test('Source code link', async () => {
     page.waitForNavigation(),
   ]);
 
-  expect(page.url()).toBe('https://github.com/Chi-teck/environment-switcher')
+  expect(page.url()).toBe('https://github.com/Chi-teck/environment-switcher');
   expect(await page.$('title')).toHaveTextContent('GitHub - Chi-teck/environment-switcher');
 });
-
