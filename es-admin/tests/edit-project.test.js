@@ -26,7 +26,7 @@ test('Edit project', async () => {
     await $nameInput.type('abc');
 
     await expect($sidebarLink).toHaveTextContent('New project*');
-    await expect($header).toHaveTextContent('abc*');
+    await expect($header).toHaveTextContent('abc *');
     await expect($revertButton).not.toBeDisabled();
   };
 

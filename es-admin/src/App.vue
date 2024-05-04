@@ -1,19 +1,19 @@
 <script>
-import SidebarItem from './components/SidebarItem.vue';
-import ToolsItem from './components/ToolsItem.vue';
+import Sidebar from './components/Sidebar.vue';
+import Tools from './components/Tools.vue';
 
 export default {
-  components: { ToolsItem, SidebarItem },
+  components: { Tools, Sidebar },
 };
 </script>
 
 <template>
   <div class="app">
-    <SidebarItem class="app__sidebar"/>
+    <Sidebar class="app__sidebar"/>
     <main class="app__main">
       <router-view />
     </main>
-    <ToolsItem class="app__tools"/>
+    <Tools class="app__tools"/>
   </div>
 </template>
 
@@ -22,15 +22,11 @@ export default {
     display: flex;
     height: 100vh;
     position: relative;
-    min-width: 60rem;
   }
   .app__main {
     padding: var(--s0);
-    flex-basis: 1fr;
-    max-width: 60rem;
-  }
-  .app__main h1 {
-    margin: 0;
+    flex-basis: calc(60 * var(--s0));
+    min-width: calc(40 * var(--s0));
   }
   .app__sidebar {
     flex-basis: calc(18 * var(--s0));

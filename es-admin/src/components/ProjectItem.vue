@@ -106,7 +106,7 @@ export default {
 <template>
   <div>
     <div v-if="project" class="project">
-      <h1>{{ project.name }}<sup v-if="changedProjects.has(project.id) && project.name.length > 0" aria-label="Changed">*</sup></h1>
+      <h1>{{ project.name }} <sup v-if="changedProjects.has(project.id) && project.name.length > 0" aria-label="Changed">*</sup></h1>
       <form @submit.prevent="save">
         <div class="form-element">
           <label for="name">Project name</label>

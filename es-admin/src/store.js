@@ -1,24 +1,33 @@
 import { toRaw, reactive } from 'vue';
 import uuid from './uuid';
 
-const createFinder = (id) => (project) => project.id === id;
+const createFinder = id => project => project.id === id;
 
 export const changedProjects = reactive({
-  data: [],
-  add(projectId) {
-    if (!this.data.includes(projectId)) {
-      this.data.push(projectId);
+
+  items: [],
+
+  add(id) {
+    if (!this.items.includes(id)) {
+      this.items.push(id);
     }
   },
-  remove(projectId) {
-    this.data = this.data.filter((item) => item !== projectId);
+
+  remove(id) {
+    this.items = this.items.filter(item => item !== id);
   },
-  has(projectId) {
-    return this.data.find((item) => item === projectId) !== undefined;
+
+  has(id) {
+    return this.items.find(item => item === id) !== undefined;
   },
+
 });
 
 export default {
+
+  addListener(callback) {
+    chrome.storage.sync.onChanged.addListener(callback);
+  },
 
   async getAll() {
     const data = await chrome.storage.sync.get();
@@ -27,7 +36,6 @@ export default {
 
   async setAll(projects) {
     await chrome.storage.sync.set({ projects });
-    this.onSave();
   },
 
   async get(id) {
@@ -44,7 +52,6 @@ export default {
     const projects = await this.getAll();
     projects.push(draft);
     await chrome.storage.sync.set({ projects });
-    this.onSave();
     return projects.find(createFinder(draft.id));
   },
 
@@ -54,7 +61,6 @@ export default {
     const index = projects.findIndex(createFinder(rawDraft.id));
     projects[index] = rawDraft;
     await chrome.storage.sync.set({ projects });
-    this.onSave();
     return projects.find(createFinder(rawDraft.id));
   },
 
@@ -63,8 +69,6 @@ export default {
     const index = projects.findIndex(createFinder(draft.id));
     projects.splice(index, 1);
     await chrome.storage.sync.set({ projects });
-    this.onSave();
   },
 
-  onSave: () => {},
 };

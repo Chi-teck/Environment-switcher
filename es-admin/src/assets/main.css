@@ -102,9 +102,12 @@ td {
   padding: var(--sm4);
 }
 
+sup {
+  color: var(--c-orange);
+}
+
 button {
   padding: 0.5em 1em;
-
   transition: 0.15s;
   border: solid 1px var(--c-whale);
   background-color: var(--c-white);
@@ -152,3 +155,4 @@ button.primary:active {
   outline: solid 3px var(--c-bondy);
   outline-offset: 2px;
 }
+

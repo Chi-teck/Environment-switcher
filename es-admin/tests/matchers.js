@@ -9,7 +9,7 @@ export async function toHaveTextContent(element, expectedTextContent) {
     return { message: () => 'Element must not be null', pass: false };
   }
   const actualTextContent = await element.evaluate((el) => el.textContent);
-  return assert('textContent', expectedTextContent, actualTextContent);
+  return assert('textContent', expectedTextContent, actualTextContent.trim());
 }
 
 export async function toHaveTitle(element, expectedTitle) {
