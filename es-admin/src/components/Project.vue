@@ -1,11 +1,12 @@
 <script setup>
-import {ref, toRaw, watch} from 'vue';
+import {ref, watch} from 'vue';
 import store from '../store';
-import uuid from '../uuid';
 import Dialog from './Dialog.vue';
-import EnvironmentForm from './EnvironmentForm.vue';
 import { changedProjects } from '@/store';
 import NotFound from './NotFound.vue';
+import EnvironmentCreateDialog from './EnvironmentCreateDialog.vue';
+import EnvironmentEditDialog from './EnvironmentEditDialog.vue';
+import EnvironmentDeleteDialog from './EnvironmentDeleteDialog.vue';
 import {useRoute, useRouter} from "vue-router";
 
 const router = useRouter();
@@ -15,7 +16,6 @@ let project = ref(null);
 
 const projectDeleteDialog = ref(null);
 const environmentCreateDialog = ref(null);
-const environmentCreateForm = ref(null);
 
 const refs = new Map();
 function registerRef(ref) {
@@ -25,23 +25,19 @@ function registerRef(ref) {
 }
 
 function createEnvironment(environment) {
-  environment = { ...environment };
-  environment.id = uuid();
-  console.log(environment);
   project.value.environments.push(environment);
 }
 
-function updateEnvironment(environment) {
-  const { id } = environment;
-  const index = project.value.environments.findIndex(environment => environment.id === id);
-  project.value.environments[index] = environment;
+function updateEnvironment(targetEnvironment) {
+  const index = project.value.environments.findIndex(environment => environment.id === targetEnvironment.id);
+  if (index === -1) {
+    throw Error('Could not find environment');
+  }
+  project.value.environments[index] = targetEnvironment;
 }
 
-function deleteEnvironment(environment) {
-  const { id } = environment;
-  const environments = project.value.environments.filter(environment => environment.id !== id);
-  console.log(environments);
-  project.value.environments = environments;
+function deleteEnvironment(targetEnvironment) {
+  project.value.environments = project.value.environments.filter(environment => environment.id !== targetEnvironment.id);
 }
 
 async function saveProject() {
@@ -92,7 +88,7 @@ watch(
           <thead>
             <tr>
               <th>Name</th>
-              <th>Status</th>
+              <th>Enabled</th>
               <th>Base URL</th>
               <th>Operations</th>
             </tr>
@@ -100,7 +96,7 @@ watch(
           <tbody>
             <tr v-for="{id, name, status, baseUrl} in project.environments" :key="id">
               <td>{{ name }}</td>
-              <td>{{ status ? 'Enabled' : 'Disabled' }}</td>
+              <td>{{ status ? 'Yes' : 'No' }}</td>
               <td><a :href="baseUrl">{{ baseUrl }}</a></td>
               <td class="operations">
                 <button type="button" class="small" @click="refs.get('dialog-edit-environment-' + id).open()">Edit</button>
@@ -119,21 +115,9 @@ watch(
           <button class="create-environment" type="button" @click="environmentCreateDialog.open()">+ Create environment</button>
         </div>
       </form>
-      <Dialog ref="environmentCreateDialog" header="Create Environment" @close="environmentCreateForm.reset()">
-        <EnvironmentForm ref="environmentCreateForm" :environment="{name: '', status: true, baseUrl: ''}" method="dialog" @save="createEnvironment" @cancel="environmentCreateDialog.close()"/>
-      </Dialog>
-      <Dialog :id="`dialog-edit-environment-${environment.id}`" :ref="registerRef" v-for="environment in project.environments" :key="environment.id" header="Edit Environment" @close="refs.get(`form-edit-environment-${environment.id}`).reset()">
-        <EnvironmentForm :id="`form-edit-environment-${environment.id}`" :ref="registerRef" :environment="{...environment}" method="dialog" @save="updateEnvironment" @cancel="refs.get(`dialog-edit-environment-${environment.id}`).close()"/>
-      </Dialog>
-      <Dialog :id="`dialog-delete-environment-${environment.id}`" :ref="registerRef" v-for="environment in project.environments" :key="environment.id" header="Delete Environment?">
-        <form method="dialog" @submit="deleteEnvironment(environment)">
-          <p>This action cannot be undone.</p>
-          <div class="actions">
-            <button class="danger">Delete</button>
-            <button data-close-modal type="button">Cancel</button>
-          </div>
-        </form>
-      </Dialog>
+      <EnvironmentCreateDialog ref="environmentCreateDialog" @submit="createEnvironment"/>
+      <EnvironmentEditDialog v-for="environment in project.environments" :id="`dialog-edit-environment-${environment.id}`" :ref="registerRef" :environment="{...environment}" @submit="updateEnvironment"/>
+      <EnvironmentDeleteDialog v-for="environment in project.environments" :id="`dialog-delete-environment-${environment.id}`" :ref="registerRef" :environment="{...environment}" @submit="deleteEnvironment"/>
       <Dialog ref="projectDeleteDialog" header="Delete project?">
         <form method="dialog" @submit="deleteProject">
           <p>This action cannot be undone.</p>
@@ -163,6 +147,9 @@ watch(
         font-size: var(--s0);
         font-weight: bold;
         text-align: left;
+    }
+    table td:nth-child(2) {
+      text-align: center;
     }
     table th:nth-child(4),
     table td:nth-child(4) {

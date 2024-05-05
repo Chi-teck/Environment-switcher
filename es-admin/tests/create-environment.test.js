@@ -44,7 +44,7 @@ test('Create environment', async () => {
   const $table = await page.$('table');
   const $tdsLocal = await $table.$$('tbody tr:first-child td');
   await expect($tdsLocal[0]).toHaveTextContent('Localhost');
-  await expect($tdsLocal[1]).toHaveTextContent('Enabled');
+  await expect($tdsLocal[1]).toHaveTextContent('Yes');
   await expect($tdsLocal[2]).toHaveTextContent('https://local.example.com');
   await expect($tdsLocal[3]).toHaveTextContent('EditDelete');
 
@@ -56,7 +56,7 @@ test('Create environment', async () => {
 
   const $tdsDev = await $table.$$('tbody tr:last-child td');
   await expect($tdsDev[0]).toHaveTextContent('Dev');
-  await expect($tdsDev[1]).toHaveTextContent('Disabled');
+  await expect($tdsDev[1]).toHaveTextContent('No');
   await expect($tdsDev[2]).toHaveTextContent('https://dev.example.com');
   await expect($tdsDev[3]).toHaveTextContent('EditDelete');
 

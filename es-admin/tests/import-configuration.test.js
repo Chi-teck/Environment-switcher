@@ -19,7 +19,7 @@ test('Import configuration', async () => {
   const $table = await page.waitForSelector('table');
   const $tds = await $table.$$('tbody tr td');
   await expect($tds[0]).toHaveTextContent('Localhost');
-  await expect($tds[1]).toHaveTextContent('Enabled');
+  await expect($tds[1]).toHaveTextContent('Yes');
   await expect($tds[2]).toHaveTextContent('https://local.example.com');
 });
 

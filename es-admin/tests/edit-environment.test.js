@@ -7,7 +7,7 @@ expect.extend(matchers);
 async function assertEnvironment(name, status, url) {
   const $tds = await page.$$('table tbody tr td');
   await expect($tds[0]).toHaveTextContent(name);
-  await expect($tds[1]).toHaveTextContent(status ? 'Enabled' : 'Disabled');
+  await expect($tds[1]).toHaveTextContent(status ? 'Yes' : 'No');
   await expect($tds[2]).toHaveTextContent(url);
 
   const data = await page.evaluate(() => chrome.storage.sync.get());

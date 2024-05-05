@@ -25,7 +25,7 @@ test('Create project', async () => {
 
   const $table = await $form.$('table');
   await expect(await $table.$('caption')).toHaveTextContent('Environments');
-  await expect(await $table.$('thead')).toHaveTextContent('NameStatusBase URLOperations');
+  await expect(await $table.$('thead')).toHaveTextContent('NameEnabledBase URLOperations');
   await expect(await $table.$('tbody')).toHaveTextContent('The are no environments yet.');
 
   const $actions = await $form.$('.actions');
