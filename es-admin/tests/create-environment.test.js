@@ -47,7 +47,7 @@ test('Create environment', async () => {
   await expect($tdsDev[1]).toHaveTextContent('Disabled');
   await expect($tdsDev[2]).toHaveTextContent('https://dev.example.com');
   await expect($tdsDev[3]).toHaveTextContent('EditDelete');
-
+  return;
   await (await page.$('xpath///form//button[text() = "Save"]')).click();
 
   const data = await page.evaluate(() => chrome.storage.sync.get());

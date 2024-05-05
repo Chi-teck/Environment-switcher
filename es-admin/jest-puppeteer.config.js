@@ -2,7 +2,7 @@ const EXTENSION_PATH = '../.';
 
 export default {
   launch: {
-    headless: true,
+    headless: false,
     defaultViewport: null,
     slowMo: process.env.SLOWMO ? process.env.SLOWMO : 0,
     devtools: false,

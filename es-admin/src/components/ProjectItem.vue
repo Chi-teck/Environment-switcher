@@ -1,113 +1,94 @@
-<script>
-import { toRaw } from 'vue';
+<script setup>
+import {ref, toRaw, watch} from 'vue';
 import store from '../store';
 import uuid from '../uuid';
-import DialogItem from './DialogItem.vue';
+import Dialog from './Dialog.vue';
 import EnvironmentForm from './EnvironmentForm.vue';
 import { changedProjects } from '@/store';
 import NotFound from './NotFound.vue';
+import {useRoute, useRouter} from "vue-router";
+
 
 const cachedProjects = {};
+const router = useRouter();
+const route = useRoute();
+const props = defineProps(['id', 'required']);
+let project = ref(null);
+const projects = ref([]);
 
-export default {
-  components: { NotFound, Dialog: DialogItem, EnvironmentForm },
-  props: {
-    id: { type: String, required: true },
-  },
-  data() {
-    return {
-      project: null,
-      changedProjects,
-    };
-  },
-  watch: {
-    project: {
-      handler(newProject, oldProject) {
-        if (newProject === oldProject) {
-          this.changedProjects.add(this.project.id);
-        }
-      },
-      deep: true,
-    },
-  },
-  created() {
-    this.$watch(
-      () => this.$route.params,
-      () => {
-        if (cachedProjects[this.id]) {
-          this.project = cachedProjects[this.id];
-          return;
-        }
-        store
-          .get(this.id)
-          .then((project) => {
-            if (project) {
-              cachedProjects[this.id] = project;
-              this.project = cachedProjects[this.id];
-            } else {
-              this.project = null;
-            }
-          });
-      },
-      { immediate: true },
-    );
-  },
-  methods: {
-    getRef(id) {
-      // When ref is used inside v-for, the resulting ref value will be an array.
-      return Array.isArray(this.$refs[id]) ? this.$refs[id][0] : this.$refs[id];
-    },
-    resetEnvironmentForm(id) {
-      this.getRef(id).reset();
-    },
-    showModal(id) {
-      this.getRef(id).$el.showModal();
-    },
-    closeModal(id) {
-      this.getRef(id).$el.close();
-    },
-    createEnvironment(environment) {
-      environment = { ...environment };
-      environment.id = uuid();
-      this.project.environments.push(environment);
-    },
-    updateEnvironment(environment) {
-      const { id } = environment;
-      const index = this.project.environments.findIndex((environment) => environment.id === id);
-      this.project.environments[index] = environment;
-    },
-    deleteEnvironment(id) {
-      const environments = this.project.environments.filter((environment) => environment.id !== id);
-      this.project.environments = toRaw(environments);
-    },
-    async save() {
-      const project = await store.update(this.project);
-      this.project = project;
-      changedProjects.remove(project.id);
-    },
-    async revert() {
-      delete cachedProjects[this.id];
-      const project = await store.get(this.id);
-      if (project) {
-        cachedProjects[this.id] = project;
-        this.project = cachedProjects[this.id];
-      }
-      changedProjects.remove(project.id);
-    },
-    async deleteProject() {
-      await store.delete(this.project);
-      changedProjects.remove(this.project.id);
-      delete cachedProjects[this.id];
-      this.$router.push({ name: 'home' });
-    },
-  },
-};
+const projectDeleteDialog = ref(null);
+const environmentCreateDialog = ref(null);
+const environmentCreateForm = ref(null);
+const environmentEditDialog = ref(null);
+
+
+const refs = new Map();
+function registerRef(ref) {
+  if (ref) {
+    refs.set(ref.$el.id, ref)
+  }
+}
+
+function createEnvironment(environment) {
+  environment = { ...environment };
+  environment.id = uuid();
+  project.value.environments.push(environment);
+}
+
+function updateEnvironment(environment) {
+  const { id } = environment;
+  const index = project.value.environments.findIndex(environment => environment.id === id);
+  project.value.environments[index] = environment;
+}
+
+function deleteEnvironment(environment) {
+  const { id } = environment;
+  const environments = project.value.environments.filter(environment => environment.id !== id);
+  console.log(environments);
+  project.value.environments = environments;
+}
+
+async function saveProject() {
+  const savedProject = await store.update(project.value);
+  project.value = savedProject;
+  changedProjects.remove(savedProject.id);
+}
+
+async function revert() {
+  const storedProject = await store.get(props.id);
+  if (storedProject) {
+    project.value = storedProject;
+  }
+  changedProjects.remove(storedProject.id);
+}
+
+async function deleteProject() {
+  await store.delete(project);
+  changedProjects.remove(project.id);
+  delete cachedProjects[props.id];
+  await router.push({ name: 'home' });
+}
+
+async function projectWatcher () {
+  const method = JSON.stringify(project.value) === originalProject ? 'remove' : 'add';
+  changedProjects[method](project.value.id);
+}
+watch(project, projectWatcher, { deep: true });
+
+let originalProject = null;
+watch(
+  () => route.params.id,
+  async () => { project.value = await store.get(props.id); originalProject = JSON.stringify(project.value) },
+  { immediate: true },
+)
+
 </script>
 <template>
   <div>
     <div v-if="project" class="project">
+      <b>{{ changedProjects.has(project.id) }}</b>
       <h1>{{ project.name }} <sup v-if="changedProjects.has(project.id) && project.name.length > 0" aria-label="Changed">*</sup></h1>
-      <form @submit.prevent="save">
+      <form @submit.prevent="saveProject">
         <div class="form-element">
           <label for="name">Project name</label>
           <input id="name" v-model="project.name" type="text" name="name" required>
@@ -128,8 +109,8 @@ export default {
               <td>{{ status ? 'Enabled' : 'Disabled' }}</td>
               <td><a :href="baseUrl">{{ baseUrl }}</a></td>
               <td class="operations">
-                <button type="button" class="small" @click="showModal(`dialog-ef-edit-${id}`)">Edit</button>
-                <button type="button" class="small danger" @click="showModal(`dialog-ef-delete-${id}`)">Delete</button>
+                <button type="button" class="small" @click="refs.get('dialog-edit-environment-' + id).showModal()">Edit</button>
+                <button type="button" class="small danger" @click="refs.get('dialog-delete-environment-' + id).showModal()">Delete</button>
               </td>
             </tr>
             <tr v-if="project.environments.length === 0">
@@ -140,18 +121,18 @@ export default {
         <div class="actions">
           <button class="primary">Save</button>
           <button class="secondary" type="button" :disabled="!changedProjects.has(id)" @click="revert">Revert</button>
-          <button class="danger" type="button" @click="showModal('dialog-project-delete')">Delete</button>
-          <button class="create-environment" @click="showModal('dialog-ef-create')">+ Create environment</button>
+          <button class="danger" type="button" @click="projectDeleteDialog.showModal()">Delete</button>
+          <button class="create-environment" type="button" @click="environmentCreateDialog.$el.showModal()">+ Create environment</button>
         </div>
       </form>
-      <Dialog ref="dialog-ef-create" header="Create Environment" @close="resetEnvironmentForm('ef-create')">
-        <EnvironmentForm ref="ef-create" :environment="{name: '', status: true, baseUrl: ''}" method="dialog" @save="createEnvironment" @cancel="closeModal('dialog-ef-create')"/>
+      <Dialog ref="environmentCreateDialog" header="Create Environment" @close="environmentCreateForm.reset()">
+        <EnvironmentForm ref="environmentCreateForm" :environment="{name: '', status: true, baseUrl: ''}" method="dialog" @save="createEnvironment" @cancel="environmentCreateDialog.$el.close()"/>
       </Dialog>
-      <Dialog v-for="environment in project.environments" :key="environment.id" :ref="`dialog-ef-edit-${environment.id}`" header="Edit Environment" @close="resetEnvironmentForm(`ef-edit-${environment.id}`)">
-        <EnvironmentForm :ref="`ef-edit-${environment.id}`" :environment="{...environment}" method="dialog" @save="updateEnvironment" @cancel="closeModal(`dialog-ef-edit-${environment.id}`)"/>
+      <Dialog :id="`dialog-edit-environment-${environment.id}`" :ref="registerRef" v-for="environment in project.environments" :key="environment.id" header="Edit Environment" @close="refs.get(`form-edit-environment-${environment.id}`).reset()">
+        <EnvironmentForm :id="`form-edit-environment-${environment.id}`" :ref="registerRef" :environment="{...environment}" method="dialog" @save="updateEnvironment" @cancel="refs.get(`dialog-edit-environment-${environment.id}`).close()"/>
       </Dialog>
-      <Dialog v-for="environment in project.environments" :key="environment.id" :ref="`dialog-ef-delete-${environment.id}`" header="Delete Environment?">
-        <form method="dialog" @submit="deleteEnvironment(environment.id)">
+      <Dialog :id="`dialog-delete-environment-${environment.id}`" :ref="registerRef" v-for="environment in project.environments" :key="environment.id" header="Delete Environment?">
+        <form method="dialog" @submit="deleteEnvironment(environment)">
           <p>This action cannot be undone.</p>
           <div class="actions">
             <button class="danger">Delete</button>
@@ -159,7 +140,7 @@ export default {
           </div>
         </form>
       </Dialog>
-      <Dialog ref="dialog-project-delete" header="Delete project?">
+      <Dialog ref="projectDeleteDialog" header="Delete project?">
         <form method="dialog" @submit="deleteProject">
           <p>This action cannot be undone.</p>
           <div class="actions">

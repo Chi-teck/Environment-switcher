@@ -10,6 +10,14 @@ export default {
       .querySelectorAll('[data-close-modal]')
       .forEach((element) => element.addEventListener('click', close));
   },
+  methods: {
+    showModal() {
+      this.$el.showModal();
+    },
+    close() {
+      this.$el.close();
+    }
+  }
 };
 </script>
 <template>
