@@ -65,12 +65,14 @@ test('Create environment', async () => {
   const data = await page.evaluate(() => chrome.storage.sync.get());
   const { environments } = data.projects[0];
   expect(environments.length).toBe(2);
+  expect(environments[0].id).toHaveLength(36);
+  expect(environments[0].status).toBe(true);
   expect(environments[0].name).toBe('Localhost');
   expect(environments[0].baseUrl).toBe('https://local.example.com');
-  expect(environments[0].status).toBe(true);
+  expect(environments[1].id).toHaveLength(36);
+  expect(environments[1].status).toBe(false);
   expect(environments[1].name).toBe('Dev');
   expect(environments[1].baseUrl).toBe('https://dev.example.com');
-  expect(environments[1].status).toBe(false);
 });
 
 afterEach(async () => {

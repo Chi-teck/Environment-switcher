@@ -13,6 +13,7 @@ async function assertEnvironment(name, status, url) {
   const data = await page.evaluate(() => chrome.storage.sync.get());
   const { environments } = data.projects[0];
   expect(environments.length).toBe(1);
+  expect(environments[0].id).toHaveLength(36);
   expect(environments[0].status).toBe(status);
   expect(environments[0].name).toBe(name);
   expect(environments[0].baseUrl).toBe(url);

@@ -7,7 +7,7 @@ const props = defineProps({
   environment: { type: Object, required: true },
 });
 
-const emit = defineEmits(['save', 'cancel']);
+const emit = defineEmits(['submit', 'cancel']);
 
 const ids = { status: uuid(), name: uuid(), baseUrl: uuid() };
 const defaultErrors = { name: null, baseUrl: null };
@@ -47,7 +47,7 @@ function onSubmit(event) {
   }
 
   environment.value.baseUrl = new URL(environment.value.baseUrl).origin;
-  emit('save', { ...environment.value });
+  emit('submit', { ...environment.value });
   reset();
 }
 

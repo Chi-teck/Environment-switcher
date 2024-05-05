@@ -8,6 +8,7 @@ import EnvironmentCreateDialog from './EnvironmentCreateDialog.vue';
 import EnvironmentEditDialog from './EnvironmentEditDialog.vue';
 import EnvironmentDeleteDialog from './EnvironmentDeleteDialog.vue';
 import {useRoute, useRouter} from "vue-router";
+import uuid from "@/uuid.js";
 
 const router = useRouter();
 const route = useRoute();
@@ -25,6 +26,7 @@ function registerRef(ref) {
 }
 
 function createEnvironment(environment) {
+  environment.id = uuid();
   project.value.environments.push(environment);
 }
 

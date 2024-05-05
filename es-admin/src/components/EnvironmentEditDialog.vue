@@ -13,7 +13,7 @@ const props = defineProps({
 const dialog = ref(null);
 const form = ref(null);
 
-function submit(environment) {
+function onSubmit(environment) {
   emit('submit', environment);
 }
 
@@ -26,7 +26,7 @@ defineExpose({ open });
 
 <template>
   <Dialog ref="dialog" header="Edit Environment" @close="form.reset()">
-    <EnvironmentForm ref="form" :environment="environment" method="dialog" @save="submit" @cancel="dialog.close()"/>
+    <EnvironmentForm ref="form" :environment="environment" method="dialog" @submit="onSubmit" @cancel="dialog.close()"/>
   </Dialog>
 </template>
 

@@ -18,32 +18,32 @@ test('Environment validation', async () => {
   const $saveButton = await $dialog.$('xpath/div//button[@class = "primary" and text() = "Save"]');
 
   await $saveButton.click();
-  await expect(await $nameInput.$('xpath/following-sibling::div[@class = "error"]')).toHaveTextContent('Please fill out this field.');
-  await expect(await $urlInput.$('xpath/following-sibling::div[@class = "error"]')).toHaveTextContent('Please fill out this field.');
+  await expect(await $nameInput.$('xpath/following-sibling::div[@class = "error-message"]')).toHaveTextContent('Please fill out this field.');
+  await expect(await $urlInput.$('xpath/following-sibling::div[@class = "error-message"]')).toHaveTextContent('Please fill out this field.');
 
   await $urlInput.type('wrong');
   await $saveButton.click();
-  await expect(await $urlInput.$('xpath/following-sibling::div[@class = "error"]')).toHaveTextContent('Please enter a URL.');
+  await expect(await $urlInput.$('xpath/following-sibling::div[@class = "error-message"]')).toHaveTextContent('Please enter a URL.');
 
   await $urlInput.click({ clickCount: 3 });
   await $urlInput.type('https://local.example.com#abc');
   await $saveButton.click();
-  await expect(await $urlInput.$('xpath/following-sibling::div[@class = "error"]')).toHaveTextContent('The URL should not include anchor.');
+  await expect(await $urlInput.$('xpath/following-sibling::div[@class = "error-message"]')).toHaveTextContent('The URL should not include anchor.');
 
   await $urlInput.click({ clickCount: 3 });
   await $urlInput.type('https://local.example.com?foo=bar');
   await $saveButton.click();
-  await expect(await $urlInput.$('xpath/following-sibling::div[@class = "error"]')).toHaveTextContent('The URL should not include query string.');
+  await expect(await $urlInput.$('xpath/following-sibling::div[@class = "error-message"]')).toHaveTextContent('The URL should not include query string.');
 
   await $urlInput.click({ clickCount: 3 });
   await $urlInput.type('https://local.example.com/foo/bar');
   await $saveButton.click();
-  await expect(await $urlInput.$('xpath/following-sibling::div[@class = "error"]')).toHaveTextContent('The URL should not include path.');
+  await expect(await $urlInput.$('xpath/following-sibling::div[@class = "error-message"]')).toHaveTextContent('The URL should not include path.');
 
   await $urlInput.click({ clickCount: 3 });
   await $urlInput.type('https://local.example.com/');
   await $saveButton.click();
-  await expect(await $urlInput.$('xpath/following-sibling::div[@class = "error"]')).toHaveTextContent('The URL should not have ending slash.');
+  await expect(await $urlInput.$('xpath/following-sibling::div[@class = "error-message"]')).toHaveTextContent('The URL should not have ending slash.');
 
   await $nameInput.type('Localhost');
   await $urlInput.click({ clickCount: 3 });
