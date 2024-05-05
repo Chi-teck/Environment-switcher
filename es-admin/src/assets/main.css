@@ -118,8 +118,14 @@ button:not(:disabled) {
   cursor: pointer;
 }
 
-button:active {
+button:not(:disabled):active {
   transform: scale(0.98);
+  filter: brightness(175%);
+}
+
+
+button:not(:disabled):not(:active):hover {
+  filter: brightness(125%);
 }
 
 button:disabled {
@@ -135,10 +141,6 @@ button.primary {
   background-color: var(--c-bondy);
   color: var(--c-white);
   border-color: var(--c-bondy);
-}
-
-button.primary:hover {
-  background-color: var(--c-venice);
 }
 
 button.danger {

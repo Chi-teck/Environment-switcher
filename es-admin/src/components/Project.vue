@@ -13,10 +13,11 @@ import uuid from "@/uuid.js";
 const router = useRouter();
 const route = useRoute();
 const props = defineProps(['id', 'required']);
-let project = ref(null);
 
+const project = ref(null);
 const projectDeleteDialog = ref(null);
 const environmentCreateDialog = ref(null);
+const projectName = ref(null);
 
 const refs = new Map();
 function registerRef(ref) {
@@ -69,11 +70,12 @@ async function projectWatcher () {
 watch(project, projectWatcher, { deep: true });
 
 let originalProject = null;
-watch(
-  () => route.params.id,
-  async () => { project.value = await store.get(props.id); originalProject = JSON.stringify(project.value) },
-  { immediate: true },
-)
+async function routeParamsWatcher() {
+  project.value = await store.get(props.id);
+  originalProject = JSON.stringify(project.value);
+  projectName.value?.focus();
+}
+watch(() => route.params.id, routeParamsWatcher, { immediate: true })
 </script>
 
 <template>
@@ -83,16 +85,13 @@ watch(
       <form @submit.prevent="saveProject">
         <div class="form-element">
           <label for="name">Project name</label>
-          <input id="name" v-model="project.name" type="text" name="name" required>
+          <input ref="projectName" id="name" v-model="project.name" type="text" name="name" required>
         </div>
         <table>
           <caption>Environments</caption>
           <thead>
             <tr>
-              <th>Name</th>
-              <th>Enabled</th>
-              <th>Base URL</th>
-              <th>Operations</th>
+              <th>Name</th><th>Enabled</th><th>Base URL</th><th>Operations</th>
             </tr>
           </thead>
           <tbody>
