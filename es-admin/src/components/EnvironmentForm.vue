@@ -1,59 +1,61 @@
-<script>
+<script setup>
 
 const defaultErrors = { name: null, baseUrl: null };
+import {ref} from 'vue';
 
-export default {
-  props: {
-    environment: { type: Object, required: true },
-  },
-  data() {
-    return {
-      errors: { ...defaultErrors },
-      environment: { ...this.$props.environment },
-    };
-  },
-  methods: {
-    reset() {
-      this.$data.errors = { ...defaultErrors };
-      this.$data.environment = { ...this.$props.environment };
-    },
-    _onSubmit(event) {
-      this.errors = { ...defaultErrors };
-      const { name: $name, base_url: $baseUrl } = event.target.elements;
+const props = defineProps({
+  environment: { type: Object, required: true },
+});
 
-      if (!$name.validity.valid) {
-        this.errors.name = $name.validationMessage;
-      }
-      if (!$baseUrl.validity.valid) {
-        this.errors.baseUrl = $baseUrl.validationMessage;
-      } else {
-        const baseUrl = new URL(this.environment.baseUrl);
-        if (baseUrl.hash !== '') {
-          this.errors.baseUrl = 'The URL should not include anchor.';
-        } else if (baseUrl.search !== '') {
-          this.errors.baseUrl = 'The URL should not include query string.';
-        } else if (baseUrl.pathname !== '/') {
-          this.errors.baseUrl = 'The URL should not include path.';
-        } else if (this.environment.baseUrl.endsWith('/')) {
-          this.errors.baseUrl = 'The URL should not have ending slash.';
-        }
-      }
+const emit = defineEmits(['save', 'cancel'])
 
-      if (this.errors.name || this.errors.baseUrl) {
-        event.preventDefault();
-        return;
-      }
+let errors = ref({ ...defaultErrors });
+let environment = ref({ ...props.environment });
 
-      this.environment.baseUrl = new URL(this.environment.baseUrl).origin;
-      this.$emit('save', { ...this.environment });
-      this.reset();
-    },
-    _onCancel() {
-      this.$emit('cancel');
-      this.reset();
-    },
-  },
-};
+function reset() {
+  errors = { ...defaultErrors };
+  environment.value = { ...props.environment };
+}
+
+function _onSubmit(event) {
+  errors.value = { ...defaultErrors };
+  const { name: $name, base_url: $baseUrl } = event.target.elements;
+
+  if (!$name.validity.valid) {
+    errors.value.name = $name.validationMessage;
+  }
+  if (!$baseUrl.validity.valid) {
+    errors.value.baseUrl = $baseUrl.validationMessage;
+  } else {
+    const baseUrl = new URL(environment.value.baseUrl);
+    if (baseUrl.hash !== '') {
+      errors.value.baseUrl = 'The URL should not include anchor.';
+    } else if (baseUrl.search !== '') {
+      errors.value.baseUrl = 'The URL should not include query string.';
+    } else if (baseUrl.pathname !== '/') {
+      errors.value.baseUrl = 'The URL should not include path.';
+    } else if (environment.value.baseUrl.endsWith('/')) {
+      errors.value.baseUrl = 'The URL should not have ending slash.';
+    }
+  }
+
+  if (errors.value.name || errors.value.baseUrl) {
+    event.preventDefault();
+    return;
+  }
+
+  environment.value.baseUrl = new URL(environment.value.baseUrl).origin;
+  emit('save', { ...environment.value });
+  reset();
+}
+
+function _onCancel() {
+  emit('cancel');
+  reset();
+}
+
+defineExpose({reset});
+
 </script>
 <template>
   <form novalidate @submit="_onSubmit">

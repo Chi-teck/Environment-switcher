@@ -27,6 +27,7 @@ function registerRef(ref) {
 function createEnvironment(environment) {
   environment = { ...environment };
   environment.id = uuid();
+  console.log(environment);
   project.value.environments.push(environment);
 }
 
