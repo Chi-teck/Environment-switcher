@@ -1,27 +1,31 @@
-<script>
-export default {
-  props: {
-    id: String,
-    header: String,
+<script setup>
+
+import { ref, onMounted } from 'vue'
+
+const props = defineProps({id: String, header: String});
+const root = ref('root');
+
+onMounted(() => {
+  const close = () => root.value.close();
+  root.value
+    // Consumers may provide own close buttons.
+    .querySelectorAll('[data-close-modal]')
+    .forEach(element => element.addEventListener('click', close));
+})
+
+const expose = {
+  open() {
+    root.value.showModal();
   },
-  mounted() {
-    const close = () => this.$el.close();
-    this.$el
-      .querySelectorAll('[data-close-modal]')
-      .forEach((element) => element.addEventListener('click', close));
+  close() {
+    root.value.close();
   },
-  methods: {
-    showModal() {
-      this.$el.showModal();
-    },
-    close() {
-      this.$el.close();
-    }
-  }
-};
+}
+defineExpose(expose);
 </script>
+
 <template>
-  <dialog :id="id" :key="id">
+  <dialog :id="id" :key="id" ref="root">
     <div class="header">
       <h2>{{ header }}</h2>
       <button type="button" data-close-modal class="close" aria-label="Close">
@@ -35,55 +39,54 @@ export default {
   </dialog>
 </template>
 <style scoped>
-    dialog {
-      padding: var(--sp2);
-      box-shadow: 0 0 6px #999;
-      border-style: none;
+  dialog {
+    padding: var(--sp2);
+    box-shadow: 0 0 6px var(--c-border);
+    border-style: none;
+  }
+  dialog[open] {
+    animation: dialogFadeIn 0.25s ease normal;
+  }
+  @keyframes dialogFadeIn {
+    from {
+      opacity: 0;
+      transform: scale(0.85);
     }
-
-    dialog[open] {
-      animation: dialogFadeIn 0.25s ease normal;
+    to {
+      opacity: 1;
+      transform: scale(1);
     }
-
-    @keyframes dialogFadeIn{
-      from {
-        opacity: 0;
-        transform: scale(0.9);
-      }
-      to {
-        opacity: 1;
-        transform: scale(1);
-
-      }
-    }
-
-    dialog {
-        min-width: 30rem;
-    }
-    .header {
-        display: flex;
-        margin-bottom: var(--sp2);
-    }
-    h2 {
-        line-height: 1;
-        margin: 0;
-    }
-    .close {
-        margin-left: auto;
-        background-color: transparent;
-        border-style: none;
-        cursor: pointer;
-        color: #ccc;
-        width: 28px;
-        height: 28px;
-        padding: 6px;
-        transform: translate(6px, -6px);
-        outline-offset: 0;
-    }
-    dialog::backdrop {
-      backdrop-filter: saturate(20%);
-    }
-    .close:hover {
-        color: var(--c-black);
-    }
+  }
+  dialog {
+    min-width: 30rem;
+  }
+  dialog::backdrop {
+    backdrop-filter: saturate(20%);
+  }
+  .header {
+    display: flex;
+    margin-bottom: var(--sp2);
+  }
+  h2 {
+    line-height: 1;
+    margin: 0;
+  }
+  .close {
+    margin-left: auto;
+    background-color: transparent;
+    border-style: none;
+    cursor: pointer;
+    color: var(--c-border);
+    width: 28px;
+    height: 28px;
+    padding: 6px;
+    transform: translate(6px, -6px);
+    outline-offset: 0;
+  }
+  .close:hover {
+    color: var(--c-black);
+  }
+  .close:active {
+    transform: scale(0.9) translate(6px, -6px);
+  }
 </style>
