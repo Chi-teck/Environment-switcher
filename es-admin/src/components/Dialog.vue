@@ -81,7 +81,6 @@ defineExpose(expose);
     height: 28px;
     padding: 6px;
     transform: translate(6px, -6px);
-    outline-offset: 0;
   }
   .close:hover {
     color: var(--c-black);

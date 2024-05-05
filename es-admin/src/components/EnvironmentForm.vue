@@ -68,7 +68,7 @@ export default {
     </div>
     <div class="form-item text-item" :class="{'has-errors': errors.baseUrl}">
       <label>Base URL</label>
-      <input v-model="environment.baseUrl" type="url" name="base_url" required placeholder="https://example.com">
+      <input v-model="environment.baseUrl" type="url" name="base_url" required placeholder="https://example.com" spellcheck="false">
       <div class="error">{{ errors.baseUrl }}</div>
     </div>
     <div class="form-item actions">

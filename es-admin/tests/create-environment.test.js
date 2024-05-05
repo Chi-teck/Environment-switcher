@@ -13,7 +13,7 @@ test('Create environment', async () => {
   await $createEnvironmentButton.click();
 
   // -- Assert environment form.
-  const $dialog = await page.waitForSelector('dialog[open]', { visible: true });
+  let $dialog = await page.waitForSelector('dialog[open]', { visible: true });
   await expect(await $dialog.$('h2')).toHaveTextContent('Create Environment');
   const $form = await $dialog.$('form');
   const $statusCheckbox = await $form.$('xpath/div/label[text() = "Enabled"]//following-sibling::input[@type = "checkbox"]');
@@ -25,6 +25,18 @@ test('Create environment', async () => {
   const $saveButton = await $form.$('xpath/div/button[@class = "primary" and text() = "Save"]');
   await expect($saveButton).toBeTruthy();
 
+  // -- Assert the form state is reset after closing the dialog.
+  await $statusCheckbox.click();
+  await $nameInput.type('Temp');
+  await $urlInput.type('https://temp.example.com');
+  await (await $dialog.$('button.close')).click();
+  await $createEnvironmentButton.click();
+  await page.waitForSelector('dialog[open]', { visible: true });
+  await expect($statusCheckbox).toBeChecked();
+  await expect($nameInput).toHaveValue('');
+  await expect($urlInput).toHaveValue('');
+
+  // -- Assert that environments are created.
   await $nameInput.type('Localhost');
   await $urlInput.type('https://local.example.com');
   await $saveButton.click();
@@ -47,7 +59,7 @@ test('Create environment', async () => {
   await expect($tdsDev[1]).toHaveTextContent('Disabled');
   await expect($tdsDev[2]).toHaveTextContent('https://dev.example.com');
   await expect($tdsDev[3]).toHaveTextContent('EditDelete');
-  return;
+
   await (await page.$('xpath///form//button[text() = "Save"]')).click();
 
   const data = await page.evaluate(() => chrome.storage.sync.get());
