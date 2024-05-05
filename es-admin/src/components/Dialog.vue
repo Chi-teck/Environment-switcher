@@ -25,7 +25,7 @@ defineExpose(expose);
 </script>
 
 <template>
-  <dialog :id="id" :key="id" ref="root">
+  <dialog :id="id" ref="root">
     <div class="header">
       <h2>{{ header }}</h2>
       <button type="button" data-close-modal class="close" aria-label="Close">
@@ -61,7 +61,7 @@ defineExpose(expose);
     min-width: 30rem;
   }
   dialog::backdrop {
-    backdrop-filter: saturate(20%);
+    backdrop-filter: saturate(15%);
   }
   .header {
     display: flex;

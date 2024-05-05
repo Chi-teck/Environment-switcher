@@ -99,7 +99,7 @@ watch(
               <td>{{ status ? 'Yes' : 'No' }}</td>
               <td><a :href="baseUrl">{{ baseUrl }}</a></td>
               <td class="operations">
-                <button type="button" class="small" @click="refs.get('dialog-edit-environment-' + id).open()">Edit</button>
+                <button type="button" class="small" @click="refs.get('edit-environment-' + id).open()">Edit</button>
                 <button type="button" class="small danger" @click="refs.get('dialog-delete-environment-' + id).open()">Delete</button>
               </td>
             </tr>
@@ -116,7 +116,7 @@ watch(
         </div>
       </form>
       <EnvironmentCreateDialog ref="environmentCreateDialog" @submit="createEnvironment"/>
-      <EnvironmentEditDialog v-for="environment in project.environments" :id="`dialog-edit-environment-${environment.id}`" :ref="registerRef" :environment="{...environment}" @submit="updateEnvironment"/>
+      <EnvironmentEditDialog v-for="environment in project.environments" :id="`edit-environment-${environment.id}`" :ref="registerRef" :environment="{...environment}" @submit="updateEnvironment"/>
       <EnvironmentDeleteDialog v-for="environment in project.environments" :id="`dialog-delete-environment-${environment.id}`" :ref="registerRef" :environment="{...environment}" @submit="deleteEnvironment"/>
       <Dialog ref="projectDeleteDialog" header="Delete project?">
         <form method="dialog" @submit="deleteProject">
@@ -166,11 +166,6 @@ watch(
 
     label {
       margin-bottom: var(--sm3);
-    }
-
-    .actions {
-        display: flex;
-        gap: var(--sm3);
     }
 
     .actions button:not(:nth-child(4)) {

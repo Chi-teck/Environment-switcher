@@ -13,6 +13,7 @@ const dialog = ref(null);
 
 function submit(environment) {
   emit('submit', environment);
+  dialog.value.close()
 }
 
 function open() {

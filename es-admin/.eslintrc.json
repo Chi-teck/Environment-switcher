@@ -27,7 +27,10 @@
         "max-len": ["off"],
         "vue/html-closing-bracket-spacing": ["off"],
         "vue/multi-word-component-names": ["off"],
-        "arrow-parens": ["off"]
+        "import/no-unresolved": ["off"],
+        "arrow-parens": ["off"],
+        "object-curly-newline": ["off"],
+        "import/extensions": ["off"]
     },
     "root": true,
     "globals": {

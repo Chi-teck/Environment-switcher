@@ -156,3 +156,8 @@ button.primary:active {
   outline-offset: 2px;
 }
 
+.actions {
+  display: flex;
+  gap: var(--sm3);
+}
+

@@ -13,7 +13,7 @@ test('Create environment', async () => {
   await $createEnvironmentButton.click();
 
   // -- Assert environment form.
-  let $dialog = await page.waitForSelector('dialog[open]', { visible: true });
+  const $dialog = await page.waitForSelector('dialog[open]', { visible: true });
   await expect(await $dialog.$('h2')).toHaveTextContent('Create Environment');
   const $form = await $dialog.$('form');
   const $statusCheckbox = await $form.$('xpath/div/label[text() = "Enabled"]//following-sibling::input[@type = "checkbox"]');
