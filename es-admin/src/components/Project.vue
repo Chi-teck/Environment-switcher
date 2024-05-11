@@ -1,19 +1,20 @@
 <script setup>
-import {ref, watch} from 'vue';
+import { ref, watch } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
 import store from '../store';
-import Dialog from './Dialog.vue';
 import { changedProjects } from '@/store';
 import NotFound from './NotFound.vue';
 import EnvironmentCreateDialog from './EnvironmentCreateDialog.vue';
 import EnvironmentEditDialog from './EnvironmentEditDialog.vue';
 import EnvironmentDeleteDialog from './EnvironmentDeleteDialog.vue';
 import ProjectDeleteDialog from './ProjectDeleteDialog.vue';
-import {useRoute, useRouter} from "vue-router";
-import uuid from "@/uuid.js";
+import uuid from '@/uuid.js';
 
 const router = useRouter();
 const route = useRoute();
-const props = defineProps(['id', 'required']);
+const props = defineProps({
+  id: { type: String, required: true },
+});
 
 const project = ref(null);
 const projectDeleteDialog = ref(null);
@@ -21,15 +22,14 @@ const environmentCreateDialog = ref(null);
 const projectName = ref(null);
 
 const refs = new Map();
-function registerRef(ref) {
-  if (ref) {
-    refs.set(ref.$el.id, ref)
+function registerRef(targetRef) {
+  if (targetRef) {
+    refs.set(targetRef.$el.id, targetRef);
   }
 }
 
 function createEnvironment(environment) {
-  environment.id = uuid();
-  project.value.environments.push(environment);
+  project.value.environments.push({ ...environment, ...{ id: uuid() } });
 }
 
 function updateEnvironment(targetEnvironment) {
@@ -60,23 +60,23 @@ async function revert() {
 
 async function deleteProject() {
   await store.delete(project);
-  changedProjects.remove(project.id);
+  changedProjects.remove(project.value.id);
   await router.push({ name: 'home' });
 }
 
-async function projectWatcher () {
+let originalProject = null;
+async function projectWatcher() {
   const method = JSON.stringify(project.value) === originalProject ? 'remove' : 'add';
   changedProjects[method](project.value.id);
 }
 watch(project, projectWatcher, { deep: true });
 
-let originalProject = null;
 async function routeParamsWatcher() {
   project.value = await store.get(props.id);
   originalProject = JSON.stringify(project.value);
   projectName.value?.focus();
 }
-watch(() => route.params.id, routeParamsWatcher, { immediate: true })
+watch(() => route.params.id, routeParamsWatcher, { immediate: true });
 </script>
 
 <template>
@@ -86,7 +86,7 @@ watch(() => route.params.id, routeParamsWatcher, { immediate: true })
       <form @submit.prevent="saveProject">
         <div class="form-element">
           <label for="name">Project name</label>
-          <input ref="projectName" id="name" v-model="project.name" type="text" name="name" required>
+          <input id="name" ref="projectName" v-model="project.name" type="text" name="name" required>
         </div>
         <table>
           <caption>Environments</caption>
@@ -96,13 +96,13 @@ watch(() => route.params.id, routeParamsWatcher, { immediate: true })
             </tr>
           </thead>
           <tbody>
-            <tr v-for="{id, name, status, baseUrl} in project.environments" :key="id">
-              <td>{{ name }}</td>
-              <td>{{ status ? 'Yes' : 'No' }}</td>
-              <td><a :href="baseUrl">{{ baseUrl }}</a></td>
+            <tr v-for="environment in project.environments" :key="environment.id">
+              <td>{{ environment.name }}</td>
+              <td>{{ environment.status ? 'Yes' : 'No' }}</td>
+              <td><a :href="environment.baseUrl">{{ environment.baseUrl }}</a></td>
               <td class="operations">
-                <button type="button" class="small" @click="refs.get('edit-environment-' + id).open()">Edit</button>
-                <button type="button" class="small danger" @click="refs.get('dialog-delete-environment-' + id).open()">Delete</button>
+                <button type="button" class="small" @click="refs.get('edit-environment-' + environment.id).open()">Edit</button>
+                <button type="button" class="small danger" @click="refs.get('dialog-delete-environment-' + environment.id).open()">Delete</button>
               </td>
             </tr>
             <tr v-if="project.environments.length === 0">
@@ -118,8 +118,8 @@ watch(() => route.params.id, routeParamsWatcher, { immediate: true })
         </div>
       </form>
       <EnvironmentCreateDialog ref="environmentCreateDialog" @submit="createEnvironment"/>
-      <EnvironmentEditDialog v-for="environment in project.environments" :id="`edit-environment-${environment.id}`" :ref="registerRef" :environment="{...environment}" @submit="updateEnvironment"/>
-      <EnvironmentDeleteDialog v-for="environment in project.environments" :id="`dialog-delete-environment-${environment.id}`" :ref="registerRef" :environment="{...environment}" @submit="deleteEnvironment"/>
+      <EnvironmentEditDialog v-for="environment in project.environments" :id="`edit-environment-${environment.id}`" :key="environment.id" :ref="registerRef" :environment="{...environment}" @submit="updateEnvironment"/>
+      <EnvironmentDeleteDialog v-for="environment in project.environments" :id="`dialog-delete-environment-${environment.id}`" :key="environment.id" :ref="registerRef" :environment="{...environment}" @submit="deleteEnvironment"/>
       <ProjectDeleteDialog ref="projectDeleteDialog" @submit="deleteProject"/>
     </div>
     <NotFound v-else />

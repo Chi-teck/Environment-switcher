@@ -1,20 +1,20 @@
 <script setup>
 
 import { ref } from 'vue';
-import EnvironmentForm from "@/components/EnvironmentForm.vue";
-import Dialog from "@/components/Dialog.vue";
+import EnvironmentForm from '@/components/EnvironmentForm.vue';
+import Dialog from '@/components/Dialog.vue';
 
-const emit = defineEmits(['submit'])
+const emit = defineEmits(['submit']);
 
-const props = defineProps({
+defineProps({
   environment: { type: Object, required: true },
 });
 
 const dialog = ref(null);
 const form = ref(null);
 
-function onSubmit(environment) {
-  emit('submit', environment);
+function onSubmit(targetEnvironment) {
+  emit('submit', targetEnvironment);
 }
 
 function open() {
@@ -29,4 +29,3 @@ defineExpose({ open });
     <EnvironmentForm ref="form" :environment="environment" method="dialog" @submit="onSubmit" @cancel="dialog.close()"/>
   </Dialog>
 </template>
-

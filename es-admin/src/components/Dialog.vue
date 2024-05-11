@@ -1,8 +1,11 @@
 <script setup>
 
-import { ref, onMounted } from 'vue'
+import { ref, onMounted } from 'vue';
 
-const props = defineProps({id: String, header: String});
+defineProps({
+  id: { type: String, required: true },
+  header: { type: String, required: true },
+});
 const root = ref('root');
 
 onMounted(() => {
@@ -11,7 +14,7 @@ onMounted(() => {
     // Consumers may provide own close buttons.
     .querySelectorAll('[data-close-modal]')
     .forEach(element => element.addEventListener('click', close));
-})
+});
 
 const expose = {
   open() {
@@ -20,7 +23,7 @@ const expose = {
   close() {
     root.value.close();
   },
-}
+};
 defineExpose(expose);
 </script>
 

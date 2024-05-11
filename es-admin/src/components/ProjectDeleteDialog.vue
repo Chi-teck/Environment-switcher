@@ -1,9 +1,9 @@
 <script setup>
 
-import Dialog from "@/components/Dialog.vue";
 import { ref } from 'vue';
+import Dialog from '@/components/Dialog.vue';
 
-const emit = defineEmits(['submit'])
+const emit = defineEmits(['submit']);
 const dialog = ref(null);
 
 function onSubmit(environment) {
