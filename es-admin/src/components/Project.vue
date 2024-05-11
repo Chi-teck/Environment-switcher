@@ -7,6 +7,7 @@ import NotFound from './NotFound.vue';
 import EnvironmentCreateDialog from './EnvironmentCreateDialog.vue';
 import EnvironmentEditDialog from './EnvironmentEditDialog.vue';
 import EnvironmentDeleteDialog from './EnvironmentDeleteDialog.vue';
+import ProjectDeleteDialog from './ProjectDeleteDialog.vue';
 import {useRoute, useRouter} from "vue-router";
 import uuid from "@/uuid.js";
 
@@ -119,62 +120,60 @@ watch(() => route.params.id, routeParamsWatcher, { immediate: true })
       <EnvironmentCreateDialog ref="environmentCreateDialog" @submit="createEnvironment"/>
       <EnvironmentEditDialog v-for="environment in project.environments" :id="`edit-environment-${environment.id}`" :ref="registerRef" :environment="{...environment}" @submit="updateEnvironment"/>
       <EnvironmentDeleteDialog v-for="environment in project.environments" :id="`dialog-delete-environment-${environment.id}`" :ref="registerRef" :environment="{...environment}" @submit="deleteEnvironment"/>
-      <Dialog ref="projectDeleteDialog" header="Delete project?">
-        <form method="dialog" @submit="deleteProject">
-          <p>This action cannot be undone.</p>
-          <div class="actions">
-            <button class="danger">Delete</button>
-            <button data-close-modal type="button">Cancel</button>
-          </div>
-        </form>
-      </Dialog>
+      <ProjectDeleteDialog ref="projectDeleteDialog" @submit="deleteProject"/>
     </div>
     <NotFound v-else />
   </div>
 </template>
 
 <style scoped>
-    h1 {
-        margin-bottom: var(--sp3);
-    }
-    sup {
-        color: var(--c-orange);
-        font-size: 0.65em;
-    }
-    .project > form > *:not(dialog) {
-        margin-bottom: var(--sp3);
-    }
-    caption {
-        font-size: var(--s0);
-        font-weight: bold;
-        text-align: left;
-    }
-    table td:nth-child(2) {
-      text-align: center;
-    }
-    table th:nth-child(4),
-    table td:nth-child(4) {
-        width: 130px;
-        text-align: center;
-    }
-    table button {
-        margin: 0 var(--sm5);
-    }
+  h1 {
+    margin-bottom: var(--sp3);
+  }
 
-    .create-environment {
-        margin-left: auto;
-    }
+  sup {
+    color: var(--c-orange);
+    font-size: 0.65em;
+  }
 
-    label {
-      margin-bottom: var(--sm3);
-    }
+  .project > form > *:not(dialog) {
+    margin-bottom: var(--sp3);
+  }
 
-    .actions button:not(:nth-child(4)) {
-        width: 80px;
-    }
+  caption {
+    font-size: var(--s0);
+    font-weight: bold;
+    text-align: left;
+  }
 
-    form p {
-      margin-top: 0;
-      margin-bottom: var(--sp2);
-    }
+  table td:nth-child(2) {
+    text-align: center;
+  }
+
+  table th:nth-child(4),
+  table td:nth-child(4) {
+    width: 130px;
+    text-align: center;
+  }
+
+  table button {
+    margin: 0 var(--sm5);
+  }
+
+  .create-environment {
+    margin-left: auto;
+  }
+
+  label {
+    margin-bottom: var(--sm3);
+  }
+
+  .actions button:not(:nth-child(4)) {
+    width: 80px;
+  }
+
+  form p {
+    margin-top: 0;
+    margin-bottom: var(--sp2);
+  }
 </style>
