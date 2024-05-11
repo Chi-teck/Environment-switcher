@@ -69,6 +69,7 @@ export default {
     const index = projects.findIndex(createFinder(draft.id));
     projects.splice(index, 1);
     await chrome.storage.sync.set({ projects });
+    changedProjects.remove(draft.id);
   },
 
 };

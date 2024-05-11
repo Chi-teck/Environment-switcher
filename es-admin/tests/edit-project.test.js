@@ -2,7 +2,7 @@
 
 import * as matchers from './matchers';
 
-expect.extend(matchers)
+expect.extend(matchers);
 
 test('Edit project', async () => {
   await page.goto(`chrome-extension://${EXTENSION_ID}/options/index.html`);

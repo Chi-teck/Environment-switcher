@@ -11,7 +11,9 @@ export default {
   <div class="app">
     <Sidebar class="app__sidebar"/>
     <main class="app__main">
-      <router-view />
+      <keep-alive include="project">
+        <router-view/>
+      </keep-alive>
     </main>
     <Tools class="app__tools"/>
   </div>

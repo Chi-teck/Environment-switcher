@@ -27,7 +27,7 @@ onMounted(updateProjects);
     <hr>
     <ul v-if="projects.length > 0">
       <li v-for="{id, name} in projects" :key="id">
-        <router-link :to="{name: 'project', params: {id}}" class="sidebar__project">
+        <router-link :to="{name: 'project', params: {id}}" class="sidebar__project" :class="{ changed: changedProjects.has(id) }">
           <div class="link-text">
             {{ name }}<sup v-if="changedProjects.has(id)" aria-label="Changed">*</sup>
           </div>
@@ -75,6 +75,11 @@ onMounted(updateProjects);
     text-decoration: none;
     display: flex;
     align-items: center;
+
+    transition: background-color 0.5s;
+  }
+  li a.changed {
+    background-color: var(--c-pampas);
   }
   .sidebar__project.active {
     box-shadow: inset 5px 0 var(--c-orange);

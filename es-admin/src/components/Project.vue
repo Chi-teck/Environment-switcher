@@ -1,4 +1,5 @@
 <script setup>
+
 import { ref, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import store from '../store';
@@ -15,6 +16,8 @@ const route = useRoute();
 const props = defineProps({
   id: { type: String, required: true },
 });
+
+const cachedProjects = [];
 
 const project = ref(null);
 const projectDeleteDialog = ref(null);
@@ -55,27 +58,36 @@ async function revert() {
   if (storedProject) {
     project.value = storedProject;
   }
-  originalProject = JSON.stringify(storedProject);
   changedProjects.remove(storedProject.id);
+
+  // Remove cached project.
+  const index = cachedProjects.findIndex(cachedProject => cachedProject.id === props.id);
+  if (index !== -1) {
+    cachedProjects.splice(index, 1);
+  }
 }
 
 async function deleteProject() {
   await store.delete(project);
-  changedProjects.remove(project.value.id);
   await router.push({ name: 'home' });
 }
 
-let originalProject = null;
 async function projectWatcher() {
+  const originalProject = JSON.stringify(await store.get(props.id));
   const method = JSON.stringify(project.value) === originalProject ? 'remove' : 'add';
   changedProjects[method](project.value.id);
 }
+
 watch(project, projectWatcher, { deep: true });
 
-async function routeParamsWatcher() {
-  project.value = await store.get(props.id);
-  originalProject = JSON.stringify(project.value);
-  projectName.value?.focus();
+async function routeParamsWatcher(projectId) {
+  const cachedProject = cachedProjects.find(targetProject => targetProject.id === projectId);
+  if (cachedProject) {
+    project.value = cachedProject;
+  } else {
+    project.value = await store.get(props.id);
+    cachedProjects.push(project.value);
+  }
 }
 watch(() => route.params.id, routeParamsWatcher, { immediate: true });
 </script>
@@ -130,6 +142,7 @@ watch(() => route.params.id, routeParamsWatcher, { immediate: true });
 <style scoped>
   h1 {
     margin-bottom: var(--sp3);
+    min-height: calc(var(--s0) *2);
   }
 
   sup {
