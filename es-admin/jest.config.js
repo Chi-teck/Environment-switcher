@@ -3,7 +3,7 @@ export default {
   preset: 'jest-puppeteer',
   maxWorkers: 1,
   testMatch: ['**/tests/*.test.js'],
-  testTimeout: 12000,
+  testTimeout: 1_000,
   globals: {
     EXTENSION_ID: 'phbkcfcooeicpodbdbngodeejmkaeamm',
   },
