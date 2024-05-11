@@ -105,6 +105,7 @@ td {
 
 sup {
   color: var(--c-orange);
+  line-height: 0;
 }
 
 button {
@@ -119,14 +120,21 @@ button:not(:disabled) {
   cursor: pointer;
 }
 
+button:not(:disabled):not(:active):hover {
+  filter: brightness(145%);
+}
+
 button:not(:disabled):active {
   transform: scale(0.98);
   filter: brightness(175%);
 }
 
+button.primary:not(:disabled):not(:active):hover {
+  filter: brightness(110%);
+}
 
-button:not(:disabled):not(:active):hover {
-  filter: brightness(125%);
+button.primary:not(:disabled):active {
+  filter: brightness(145%);
 }
 
 button:disabled {
@@ -155,7 +163,7 @@ button.primary:active {
 }
 
 *:focus-visible {
-  outline: solid 3px var(--c-bondy);
+  outline: solid 2px var(--c-bondy);
   outline-offset: 2px;
 }
 
@@ -168,4 +176,13 @@ button.primary:active {
   position: absolute;
   clip-path: inset(100%);
   clip: rect(0 0 0 0);
+}
+
+dialog form p {
+  margin-top: 0;
+  margin-bottom: var(--sp2);
+}
+
+input, button, a {
+  transition: outline-offset 0.15s;
 }

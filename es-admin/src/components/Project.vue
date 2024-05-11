@@ -185,9 +185,4 @@ watch(() => route.params.id, routeParamsWatcher, { immediate: true });
   .actions button:not(:nth-child(4)) {
     width: 80px;
   }
-
-  form p {
-    margin-top: 0;
-    margin-bottom: var(--sp2);
-  }
 </style>

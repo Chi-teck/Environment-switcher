@@ -38,10 +38,3 @@ defineExpose({ open });
     </div>
   </Dialog>
 </template>
-
-<style scoped>
-  form p {
-    margin-top: 0;
-    margin-bottom: var(--sp2);
-  }
-</style>
