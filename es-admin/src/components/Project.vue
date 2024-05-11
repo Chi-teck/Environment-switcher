@@ -55,6 +55,7 @@ async function revert() {
   if (storedProject) {
     project.value = storedProject;
   }
+  originalProject = JSON.stringify(storedProject);
   changedProjects.remove(storedProject.id);
 }
 

@@ -2,17 +2,15 @@
 
 import * as matchers from './matchers';
 
-expect.extend(matchers);
+expect.extend(matchers)
 
 test('Edit project', async () => {
   await page.goto(`chrome-extension://${EXTENSION_ID}/options/index.html`);
   await (await page.$('.sidebar button.primary')).click();
 
   const $sidebarLink = await page.waitForSelector('.sidebar li a.active', { visible: true });
-
   const $saveButton = await page.$('.actions button.primary');
   const $revertButton = await page.$('.actions button.secondary');
-
   const $header = await page.$('h1');
 
   const editProject = async function editProject() {
