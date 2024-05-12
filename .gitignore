@@ -1,2 +1,4 @@
 /.idea/
 /es-admin/node_modules/
+/*.zip
+/options/index.js.map
