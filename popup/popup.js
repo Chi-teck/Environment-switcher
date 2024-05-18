@@ -47,7 +47,7 @@ if (project) {
     if (environment.status) {
       const item = createItem(
         environment.name,
-        environment.baseUrl + currentUrl.pathname,
+        environment.baseUrl + currentUrl.pathname + currentUrl.search,
         currentUrl.origin === environment.baseUrl,
       );
       list.appendChild(item);
